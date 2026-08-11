@@ -53,9 +53,9 @@ const OPENAI_TIMEOUT_MS = 65_000;
 
 const limiter = createRateLimiter({
   // A guardrail for this two-recipient demo, not a distributed hard cap.
-  perIpLimit: 3,
+  perIpLimit: 7,
   perIpWindowMs: 60 * 60 * 1000,
-  globalDailyLimit: 20,
+  globalDailyLimit: 40,
 });
 
 interface AnthropicPrimaryRun extends ProviderRun {

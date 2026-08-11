@@ -451,13 +451,20 @@ export function initInput(): void {
   modeDraftBtn.addEventListener("click", () => setMode("draft"));
   modeIdeaBtn.addEventListener("click", () => setMode("idea"));
   textarea.addEventListener("input", () => {
-    if (running) cancelInFlight();
+    const wasRunning = running;
+    if (wasRunning) cancelInFlight();
     // Any edit makes the visible result stale, whether it came from a sample
     // or a typed live run.
     activeSampleId = null;
     clearResults();
     progressLog.replaceChildren();
-    setStatus("");
+    // A canceled run must say so — a silent blank page reads as a crash.
+    setStatus(
+      wasRunning
+        ? `Run canceled because the text changed. Click “${findBtn.textContent ?? "Run"}” to start again.`
+        : "",
+      wasRunning,
+    );
     sampleNote.hidden = true;
     updateCount();
   });
