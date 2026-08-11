@@ -6,7 +6,8 @@
 
 import { SAMPLE_DRAFTS, STORY_IDEAS } from "../../lib/samples.js";
 import { RECORDED_RESULTS } from "../../lib/recorded-result.js";
-import type { Suggestion } from "../../lib/grounding.js";
+import { applyGroundingGate, type Suggestion } from "../../lib/grounding.js";
+import type { RecordedResult } from "../../lib/recorded-result.js";
 import { byId, el } from "../format.js";
 import { clearResults, renderResults } from "./results.js";
 
@@ -87,13 +88,7 @@ export function initInput(): void {
           setStatus("");
           const recorded = RECORDED_RESULTS.find((r) => r.sampleId === idea.id);
           if (recorded) {
-            renderResults(recorded.suggestions, {
-              provenance:
-                `Recorded ${recorded.model} run (captured ${recorded.capturedOn}), replayed verbatim — no API call was made. Not convinced? "Find missed sources" runs it live.`,
-              droppedCount: recorded.droppedCount,
-              searchesRun: recorded.searchesRun,
-              ms: recorded.ms,
-            });
+            renderRecorded(recorded);
           } else {
             clearResults();
           }
@@ -128,19 +123,29 @@ export function initInput(): void {
     sampleNote.appendChild(document.createTextNode("."));
 
     const recorded = RECORDED_RESULTS.find((r) => r.sampleId === id);
+    setStatus("");
     if (recorded) {
-      setStatus("");
-      renderResults(recorded.suggestions, {
-        provenance:
-          `Recorded ${recorded.model} run (captured ${recorded.capturedOn}), replayed verbatim — no API call was made. Not convinced? "Find missed sources" runs it live.`,
-        droppedCount: recorded.droppedCount,
-        searchesRun: recorded.searchesRun,
-        ms: recorded.ms,
-      });
+      renderRecorded(recorded);
     } else {
       clearResults();
-      setStatus("");
     }
+  }
+
+  /* Replay runs the committed fixture back through the same grounding
+   * gate the server applies — the honesty claim is enforced in the
+   * browser, not just promised by CI. */
+  function renderRecorded(recorded: RecordedResult): void {
+    const { kept, droppedCount } = applyGroundingGate(
+      recorded.suggestions,
+      new Set(recorded.searchUrlsNormalized),
+    );
+    renderResults(kept, {
+      provenance:
+        `Recorded ${recorded.model} run (captured ${recorded.capturedOn}), replayed verbatim and re-checked against the grounding gate in your browser — no API call was made. Not convinced? "Find missed sources" runs it live.`,
+      droppedCount: recorded.droppedCount + droppedCount,
+      searchesRun: recorded.searchesRun,
+      ms: recorded.ms,
+    });
   }
 
   function setMode(next: Mode): void {
@@ -149,8 +154,8 @@ export function initInput(): void {
     mode = next;
     modeDraftBtn.classList.toggle("is-active", mode === "draft");
     modeIdeaBtn.classList.toggle("is-active", mode === "idea");
-    modeDraftBtn.setAttribute("aria-selected", String(mode === "draft"));
-    modeIdeaBtn.setAttribute("aria-selected", String(mode === "idea"));
+    modeDraftBtn.setAttribute("aria-pressed", String(mode === "draft"));
+    modeIdeaBtn.setAttribute("aria-pressed", String(mode === "idea"));
     textarea.placeholder = mode === "draft"
       ? "Paste your draft here, or load one of the samples above."
       : "Describe the story you're planning — a sentence or two is enough. Or pick an example above.";
@@ -175,16 +180,23 @@ export function initInput(): void {
     findBtn.disabled = true;
     clearResults();
 
+    // Announce the wait sentence ONCE (role="status" would otherwise
+    // re-announce every second); the ticking seconds live in a span
+    // hidden from screen readers.
     const startedAt = Date.now();
-    setStatus(
-      "Reading your text and running up to 8 real web searches. This usually takes one to two minutes.",
+    const line = el(
+      "p",
+      "status-line",
+      "Reading your text and running up to 8 real web searches. This usually takes one to two minutes. ",
     );
+    const secondsEl = el("span", undefined, "");
+    secondsEl.setAttribute("aria-hidden", "true");
+    line.appendChild(secondsEl);
+    status.replaceChildren(line);
     const tick = window.setInterval(() => {
       if (seq !== runSeq) return; // superseded — stop touching the status
       const s = Math.round((Date.now() - startedAt) / 1000);
-      setStatus(
-        `Reading your text and running up to 8 real web searches. This usually takes one to two minutes. (${s}s)`,
-      );
+      secondsEl.textContent = `(${s}s)`;
     }, 1000);
 
     try {

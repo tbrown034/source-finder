@@ -46,6 +46,15 @@ export function createRateLimiter(opts: {
 }
 
 export function clientIp(req: VercelRequest): string {
+  // Prefer platform-set headers over x-forwarded-for: the leftmost XFF
+  // entry is client-supplied, and a rotating value there would mint a
+  // fresh per-IP bucket on every request.
+  for (const name of ["x-vercel-forwarded-for", "x-real-ip"]) {
+    const value = req.headers[name];
+    const first = Array.isArray(value) ? value[0] : value;
+    const ip = first?.split(",")[0]?.trim();
+    if (ip) return ip;
+  }
   const forwarded = req.headers["x-forwarded-for"];
   const first = Array.isArray(forwarded) ? forwarded[0] : forwarded;
   return first?.split(",")[0]?.trim() || "unknown";

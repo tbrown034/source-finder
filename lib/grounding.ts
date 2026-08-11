@@ -73,6 +73,9 @@ export function collectSearchUrls(content: unknown): Set<string> {
     if (!Array.isArray(inner)) continue; // error object, not a result list
     for (const result of inner) {
       if (typeof result !== "object" || result === null) continue;
+      // Pin the item type so a future block-shape change can't silently
+      // widen what counts as "a search result".
+      if ((result as { type?: unknown }).type !== "web_search_result") continue;
       const url = (result as { url?: unknown }).url;
       if (typeof url !== "string") continue;
       const normalized = normalizeUrl(url);

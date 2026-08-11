@@ -41,5 +41,9 @@ export function buildUserContent(text: string, isIdea: boolean): string {
   const framing = isIdea
     ? "The reporter has a STORY IDEA, not a draft yet. Suggest the sources they should line up before reporting begins."
     : "The reporter has a STORY DRAFT. Read it for who is present and who is missing.";
-  return `${framing}\n\n<reporter_text>\n${text}\n</reporter_text>`;
+  // A pasted literal closing tag would end the data block early and let
+  // the remainder read as instruction. Neutralize it; the prompt already
+  // says the text is data, this makes the delimiter unforgeable enough.
+  const safe = text.replace(/<\/?reporter_text>/gi, "[tag removed]");
+  return `${framing}\n\n<reporter_text>\n${safe}\n</reporter_text>`;
 }

@@ -22,6 +22,7 @@ import {
   collectSearchUrls,
 } from "../lib/grounding.js";
 import { SAMPLE_DRAFTS, STORY_IDEAS } from "../lib/samples.js";
+import { parseSuggestionsArray } from "../lib/parse-answer.js";
 
 const sampleId = process.argv[2];
 const draft = SAMPLE_DRAFTS.find((s) => s.id === sampleId);
@@ -69,18 +70,11 @@ const payload = await response.json();
 const ms = Date.now() - started;
 
 const searchUrls = collectSearchUrls(payload.content);
-let answerText = "";
-for (const block of payload.content) {
-  if (block.type === "text") answerText += block.text;
-}
-const cleaned = answerText.replace(/```json|```/g, "");
-const start = cleaned.indexOf("[");
-const end = cleaned.lastIndexOf("]");
-if (start === -1 || end <= start) {
-  console.error("No JSON array in model output:\n" + answerText);
+const suggestions = parseSuggestionsArray(payload.content);
+if (!suggestions) {
+  console.error("No JSON array in model output");
   process.exit(1);
 }
-const suggestions = JSON.parse(cleaned.slice(start, end + 1));
 const { kept, droppedCount } = applyGroundingGate(suggestions, searchUrls);
 
 const fixture = {

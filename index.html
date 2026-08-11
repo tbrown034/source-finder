@@ -33,14 +33,14 @@
     <section aria-labelledby="inputH">
       <h2 id="inputH" class="visually-hidden">Your story</h2>
 
-      <div class="mode-toggle" role="tablist" aria-label="Input mode">
+      <div class="mode-toggle" role="group" aria-label="Input mode">
         <button type="button" id="modeDraft" class="mode-btn is-active"
-          role="tab" aria-selected="true">Paste a full draft</button>
+          aria-pressed="true">Paste a full draft</button>
         <button type="button" id="modeIdea" class="mode-btn"
-          role="tab" aria-selected="false">Describe your story</button>
+          aria-pressed="false">Describe your story</button>
       </div>
 
-      <div id="sampleRow" class="sample-row" aria-label="Load an example"></div>
+      <div id="sampleRow" class="sample-row" role="group" aria-label="Load an example"></div>
 
       <p id="sampleNote" class="sample-note" hidden></p>
 

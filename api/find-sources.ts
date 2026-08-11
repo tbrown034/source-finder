@@ -23,6 +23,7 @@ import {
   MODEL,
   SYSTEM_PROMPT,
 } from "../lib/prompt.js";
+import { parseSuggestionsArray } from "../lib/parse-answer.js";
 
 const MAX_INPUT_CHARS = 8000;
 // Live runs with 6-8 searches take 60-90s; the function's maxDuration is
@@ -66,6 +67,16 @@ export default async function handler(
   }
   const isIdea = mode === "idea";
 
+  // Key check before the limiter: a misconfigured deployment must not
+  // drain the daily budget on requests that never reach the model.
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) {
+    res.status(503).json({
+      error: "ANTHROPIC_API_KEY is not configured on this deployment",
+    });
+    return;
+  }
+
   try {
     if (limiter.overQuota(clientIp(req))) {
       res.status(429).json(QUOTA_BODY);
@@ -74,14 +85,6 @@ export default async function handler(
   } catch {
     // Fail closed: if the counter path breaks, no model call happens.
     res.status(429).json(QUOTA_BODY);
-    return;
-  }
-
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) {
-    res.status(503).json({
-      error: "ANTHROPIC_API_KEY is not configured on this deployment",
-    });
     return;
   }
 
@@ -121,7 +124,16 @@ export default async function handler(
   }
 
   if (!response.ok) {
-    res.status(502).json({ error: "model call failed" });
+    // Log the upstream status for the operator; tell the reader the truth
+    // about whether retrying can help.
+    console.error(`anthropic upstream error: HTTP ${response.status}`);
+    if (response.status === 429 || response.status === 529) {
+      res.status(503).json({
+        error: "the model provider is busy — try again in a minute",
+      });
+    } else {
+      res.status(502).json({ error: "model call failed" });
+    }
     return;
   }
 
@@ -146,33 +158,7 @@ export default async function handler(
 
   const content = payload.content;
   const searchUrls = collectSearchUrls(content);
-
-  // The final answer is the concatenation of text blocks; the JSON array
-  // is expected to be the last thing the model writes.
-  let answerText = "";
-  if (Array.isArray(content)) {
-    for (const block of content) {
-      if (
-        typeof block === "object" && block !== null &&
-        (block as { type?: unknown }).type === "text" &&
-        typeof (block as { text?: unknown }).text === "string"
-      ) {
-        answerText += (block as { text: string }).text;
-      }
-    }
-  }
-
-  let suggestions: unknown = null;
-  const cleaned = answerText.replace(/```json|```/g, "");
-  const start = cleaned.indexOf("[");
-  const end = cleaned.lastIndexOf("]");
-  if (start !== -1 && end > start) {
-    try {
-      suggestions = JSON.parse(cleaned.slice(start, end + 1));
-    } catch {
-      suggestions = null;
-    }
-  }
+  const suggestions = parseSuggestionsArray(content);
   if (!Array.isArray(suggestions)) {
     res.status(502).json({
       error:
