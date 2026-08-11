@@ -68,8 +68,11 @@
       <summary>What this does, what gets sent, and what it never does</summary>
       <div class="disclosure-body">
         <p><strong>What the AI does.</strong> A live request first uses
-        Anthropic's Claude Sonnet 5. If it cannot complete a usable grounded
-        run, the server makes one backup attempt with OpenAI's GPT-5.6 Terra. The active model
+        Anthropic's <a href="https://www.anthropic.com/news/claude-sonnet-5"
+        target="_blank" rel="noopener noreferrer">Claude Sonnet 5</a>. If it cannot complete a usable grounded
+        run, the server makes one backup attempt with OpenAI's <a
+        href="https://openai.com/index/gpt-5-6/" target="_blank"
+        rel="noopener noreferrer">GPT-5.6 Terra</a>. The active model
         reads your text, searches the web and proposes sources across four
         blindspot categories. Server-side code then drops every suggestion
         that is not backed by an actual search result URL — if the model
