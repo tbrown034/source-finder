@@ -8,11 +8,6 @@
  * print keeps the leads and their URLs legible on paper. */
 
 @font-face {
-  font-family: "Chomsky";
-  src: url("./fonts/chomsky.woff2") format("woff2");
-  font-display: swap;
-}
-@font-face {
   font-family: "Spectral";
   src: url("./fonts/spectral-400.woff2") format("woff2");
   font-weight: 400;
@@ -48,7 +43,6 @@
   --stamp-soft: #F6EFDA;
   --alarm: #A33B2E;
 
-  --nameplate: "Chomsky", Georgia, serif;
   --serif: "Spectral", "Iowan Old Style", Georgia, serif;
   --sans: -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   --mono: ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -83,45 +77,26 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* --- masthead: the front page --- */
+/* --- app bar: a tool header, not a front page --- */
 
-.masthead {
-  max-width: 840px;
-  margin: 0 auto;
-  padding: 18px 20px 0;
-  text-align: center;
+.appbar {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  padding: 14px 20px;
+  border-bottom: 2px solid var(--rule);
+  background: var(--surface);
 }
 
-.ear {
-  font-family: var(--serif);
-  font-style: italic;
-  font-size: 13px;
-  color: var(--ink-3);
-  margin: 0 0 6px;
-}
-
-.nameplate {
-  font-family: var(--nameplate);
-  font-weight: 400;
-  font-size: clamp(44px, 9vw, 76px);
-  line-height: 1.05;
-  margin: 0;
+.brand {
+  font: 700 17px var(--sans);
   letter-spacing: 0.01em;
 }
 
-.dateline {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 8px;
-  font-size: 11.5px;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  color: var(--ink-2);
-  margin: 10px 0 0;
-  padding: 7px 0;
-  border-top: 1px solid var(--rule);
-  border-bottom: 3px double var(--rule);
+.appbar-note {
+  font-size: 13px;
+  color: var(--ink-3);
 }
 
 /* --- shell --- */
@@ -585,7 +560,7 @@ textarea::placeholder { color: var(--ink-3); font-style: italic; }
 
 @media print {
   body { background: #fff; color: #000; }
-  .ear, .mode-toggle, .desk-hint, .sample-row, textarea,
+  .appbar, .mode-toggle, .desk-hint, .sample-row, textarea,
   .input-footer, .wire, #status { display: none !important; }
   .desk { border: 0; padding: 0; }
   .disclosure[open] summary { display: none; }
