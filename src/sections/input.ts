@@ -158,6 +158,9 @@ export function initInput(): void {
     setStatus(
       `Example loaded. Click “${findBtn.textContent ?? "Run"}” to run the demo.`,
     );
+    // Bring the filled box into view — on mobile the examples push it
+    // off-screen, and a tap that visibly changes nothing reads as broken.
+    textarea.scrollIntoView({ behavior: "smooth", block: "center" });
   }
 
   /* Saved examples are re-run through the same deterministic URL gate in the
