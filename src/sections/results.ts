@@ -115,5 +115,10 @@ export function renderResults(
   }
 
   root.replaceChildren(frag);
-  root.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  // Land with the input footer still in view so the reader keeps their
+  // bearings — jumping straight to the results reads as a hard cut.
+  (document.querySelector(".input-footer") ?? root).scrollIntoView({
+    behavior: "smooth",
+    block: "start",
+  });
 }

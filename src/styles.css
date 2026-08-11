@@ -399,6 +399,10 @@ textarea::placeholder { color: var(--ink-3); font-style: italic; }
   margin: 0 0 6px;
 }
 
+/* Scroll target for run start and results: leave air above the button row
+ * so the end of the draft stays visible instead of pinning to the edge. */
+.input-footer { scroll-margin-top: 28px; }
+
 .result-intro {
   font-family: var(--serif);
   font-size: 15px;
