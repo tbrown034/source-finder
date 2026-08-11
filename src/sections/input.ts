@@ -73,6 +73,7 @@ export function initInput(): void {
   function startOver(): void {
     cancelInFlight();
     textarea.value = "";
+    textarea.style.height = "";
     activeSampleId = null;
     sampleNote.hidden = true;
     updateCount();
@@ -158,8 +159,10 @@ export function initInput(): void {
     setStatus(
       `Example loaded. Click “${findBtn.textContent ?? "Run"}” to run the demo.`,
     );
-    // Bring the filled box into view — on mobile the examples push it
-    // off-screen, and a tap that visibly changes nothing reads as broken.
+    // Grow the box to show the loaded story, then bring it into view —
+    // on mobile the examples push it off-screen, and a tap that visibly
+    // changes nothing reads as broken.
+    textarea.style.height = `${Math.min(textarea.scrollHeight + 4, 420)}px`;
     textarea.scrollIntoView({ behavior: "smooth", block: "center" });
   }
 
