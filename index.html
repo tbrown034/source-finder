@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Source Finder — Who is your story missing? (Concept Demo)</title>
+  <meta name="description" content="Paste a story draft or idea. Get back search-grounded leads on the sources and perspectives the story may be missing. A newsroom concept demo." />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='5' y='3' width='18' height='24' rx='2' fill='%23FDFBF4' stroke='%231E5E4E' stroke-width='2'/%3E%3Cline x1='9' y1='9' x2='19' y2='9' stroke='%231E5E4E' stroke-width='2'/%3E%3Cline x1='9' y1='14' x2='19' y2='14' stroke='%231E5E4E' stroke-width='2'/%3E%3Ccircle cx='21' cy='21' r='6' fill='none' stroke='%23232E28' stroke-width='2.5'/%3E%3Cline x1='25.5' y1='25.5' x2='30' y2='30' stroke='%23232E28' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E" />
+</head>
+<body>
+  <header class="appbar">
+    <span class="brand">Source Finder</span>
+    <span class="appbar-note">Newsroom concept demo</span>
+  </header>
+
+  <main class="wrap">
+    <p class="demo-banner">
+      Concept demo, built overnight Aug 11, 2026 · suggestions are leads to
+      verify, never sources to quote · nothing you paste is stored
+    </p>
+
+    <header class="masthead">
+      <h1>Who is your story missing?</h1>
+      <p class="dek">
+        Paste a draft or describe a story idea. This tool reads it, runs real
+        web searches, and returns the sources and perspectives the story may
+        be missing — grouped by blindspot, every suggestion grounded in a
+        live search result. It is an editorial-craft mirror, not a
+        replacement for editors.
+      </p>
+    </header>
+
+    <section aria-labelledby="inputH">
+      <h2 id="inputH" class="visually-hidden">Your story</h2>
+
+      <div class="mode-toggle" role="tablist" aria-label="Input mode">
+        <button type="button" id="modeDraft" class="mode-btn is-active"
+          role="tab" aria-selected="true">Paste a full draft</button>
+        <button type="button" id="modeIdea" class="mode-btn"
+          role="tab" aria-selected="false">Describe your story</button>
+      </div>
+
+      <div id="sampleRow" class="sample-row" aria-label="Load an example"></div>
+
+      <p id="sampleNote" class="sample-note" hidden></p>
+
+      <textarea id="storyText" rows="12" maxlength="8000"
+        aria-label="Story draft or idea"
+        placeholder="Paste your draft here, or load one of the samples above."></textarea>
+
+      <div class="input-footer">
+        <span id="charCount" class="char-count">0 / 8,000</span>
+        <button type="button" id="findBtn" class="find-btn">Find missed sources</button>
+      </div>
+    </section>
+
+    <section aria-labelledby="resultsH">
+      <h2 id="resultsH" class="visually-hidden">Results</h2>
+      <div id="status" role="status" aria-live="polite"></div>
+      <div id="results"></div>
+    </section>
+
+    <details class="disclosure">
+      <summary>What this does, what gets sent, and what it never does</summary>
+      <div class="disclosure-body">
+        <p><strong>What the AI does.</strong> One model call per request:
+        Claude (claude-sonnet-4-6, by Anthropic) reads your text, runs up to
+        eight real web searches, and proposes sources across five blindspot
+        categories. Server-side code then drops every suggestion that is not
+        backed by an actual search result URL — if the model cannot ground a
+        suggestion in a search it ran, you never see it. The page tells you
+        how many were dropped.</p>
+        <p><strong>What gets sent.</strong> The text you paste is sent to
+        Anthropic's API to be read by the model, and the model's search
+        queries go out to the web. Nothing is stored by this site; there is
+        no database and no analytics on the text.</p>
+        <p><strong>What it never does.</strong> It does not judge whether
+        your story is good. It does not contact anyone. It does not replace
+        your editor: every suggestion is a lead to verify with your own
+        reporting before you rely on it, and it never suggests private
+        individuals — only organizations, officials, public records, and
+        expert roles.</p>
+        <p><strong>The sample drafts</strong> were written for this demo.
+        Their facts draw on real Houston Chronicle reporting, credited and
+        linked on each sample; no Chronicle text is reproduced.</p>
+      </div>
+    </details>
+
+    <footer>
+      <p>
+        Everything on this page was written by a person or computed in code,
+        except the clearly labeled model outputs. Sibling project:
+        <a href="https://foreclosure-navigator.vercel.app" rel="noopener"
+          target="_blank">Foreclosure Navigator</a> — same design contract:
+        deterministic gates around a narrow, disclosed AI edge.
+      </p>
+      <p class="fine">Built overnight August 11, 2026 · concept demo, not a product</p>
+    </footer>
+  </main>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>
