@@ -466,7 +466,13 @@ export function initInput(): void {
       cancelInFlight();
       setStatus("");
     }
-    activeSampleId = null;
+    if (activeSampleId !== null) {
+      // The text no longer matches the loaded sample, so results rendered
+      // for that sample no longer describe what's in the box.
+      activeSampleId = null;
+      clearResults();
+      progressLog.replaceChildren();
+    }
     sampleNote.hidden = true;
     updateCount();
   });

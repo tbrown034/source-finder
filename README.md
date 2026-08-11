@@ -26,10 +26,13 @@ contract.
 3. **No private individuals.** The tool suggests organizations, public
    officials in their official capacity, datasets, public records, and expert
    roles. This is enforced in the prompt and is part of the product's shape.
-4. **Recorded replay by default, live on demand.** Two sample drafts carry
-   recorded claude-sonnet-4-6 runs, captured by `scripts/record-sample.ts`
-   through the same prompt and gate the server uses, and replayed verbatim
-   at no cost. Labels never blur recorded vs live.
+4. **Recorded replay by default, live on demand.** Sample chips with a
+   committed fixture (two drafts and one story idea, captured on
+   claude-sonnet-4-6 by `scripts/record-sample.ts` through the same prompt
+   and gate the server uses) replay instantly at no cost, labeled with
+   model and capture date and re-checked through the gate in the browser;
+   "Run it live instead" repeats the run against the API. Typed or pasted
+   text always runs live. Labels never blur the two.
 5. **Disclosure on the page.** What the model does, what gets sent (the
    pasted text to Anthropic, search queries to the web), and what the tool
    never does (judge the story, contact anyone, replace editorial judgment).
@@ -80,6 +83,21 @@ pnpm test          # vitest
 pnpm build         # tsc --noEmit && vite build
 pnpm dev           # page only; /api needs `vercel dev` and ANTHROPIC_API_KEY
 ```
+
+Regression harness for the live path (spends real API money — roughly
+$0.05-0.10 per haiku run, $0.25-0.40 per sonnet run):
+
+```
+set -a; source .env.local; set +a
+node_modules/.bin/esbuild scripts/gate-harness.ts --bundle --format=esm \
+  --platform=node --outfile=/tmp/gate-harness.mjs
+node /tmp/gate-harness.mjs 3 --stream claude-sonnet-4-6 cyfair-bond
+```
+
+It runs the real prompt + gate on sample inputs and prints kept/dropped
+per run with the reason for every drop. `--stream` exercises the exact
+SSE-reassembly path the deployed function uses. Run it before and after
+any change to lib/prompt.ts or the gate.
 
 ## Honest limitations
 
