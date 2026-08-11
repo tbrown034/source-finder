@@ -38,7 +38,9 @@ const MAX_INPUT_CHARS = 8000;
 const TIMEOUT_MS = 150_000;
 
 const limiter = createRateLimiter({
-  perIpLimit: 3,
+  // Sample chips fire live runs directly, so a browsing editor needs
+  // headroom; the global daily cap is the cost fuse.
+  perIpLimit: 10,
   perIpWindowMs: 60 * 60 * 1000,
   globalDailyLimit: 100,
 });

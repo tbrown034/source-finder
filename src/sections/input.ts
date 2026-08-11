@@ -165,31 +165,47 @@ export function initInput(): void {
       sampleNote.appendChild(document.createTextNode("."));
     }
 
-    // Replay by default, live on demand: a committed recorded run renders
-    // instantly, labeled; the live action is one visible click away.
-    const recorded = RECORDED_RESULTS.find((r) => r.sampleId === id);
-    if (recorded) {
-      renderRecorded(recorded);
-    } else {
-      clearResults();
-    }
+    // Live-first: loading a sample fires the real API call immediately.
+    // The committed recording is the safety net — it appears, clearly
+    // labeled, only if the live run fails.
+    clearResults();
+    void findSources();
   }
 
-  /* Replay re-runs the committed fixture through the same grounding gate
-   * the server applies — the honesty claim is enforced in the browser. */
-  function renderRecorded(recorded: RecordedResult): void {
+  /* The fallback replay re-runs the committed fixture through the same
+   * grounding gate the server applies — the honesty claim is enforced in
+   * the browser. Only rendered when a live run failed, and labeled so. */
+  function renderRecordedFallback(recorded: RecordedResult, reason: string): void {
     const { kept, droppedCount } = applyGroundingGate(
       recorded.suggestions,
       new Set(recorded.searchUrlsNormalized),
     );
+    setStatus(
+      `${reason} Showing a recorded run of this example instead — clearly not live.`,
+      true,
+    );
     renderResults(kept, {
       provenance:
-        `Recorded ${recorded.model} run, captured ${recorded.capturedOn} — replayed with no API call and re-checked against the grounding gate in your browser.`,
+        `Recorded ${recorded.model} run, captured ${recorded.capturedOn} — a replay standing in for the failed live run, re-checked against the grounding gate in your browser.`,
       droppedCount: recorded.droppedCount + droppedCount,
       searchesRun: recorded.searchesRun,
       ms: recorded.ms,
       onRunLive: () => void findSources(),
     });
+  }
+
+  /* On any live failure, fall back to the loaded sample's recording when
+   * one exists; otherwise show the plain error. */
+  function failWithFallback(reason: string): void {
+    progressLog.replaceChildren();
+    const recorded = activeSampleId
+      ? RECORDED_RESULTS.find((r) => r.sampleId === activeSampleId)
+      : undefined;
+    if (recorded) {
+      renderRecordedFallback(recorded, reason);
+    } else {
+      setStatus(reason, true);
+    }
   }
 
   function setMode(next: Mode): void {
@@ -311,7 +327,8 @@ export function initInput(): void {
         `See a recorded ${recorded.model} run instead`,
       ) as HTMLButtonElement;
       replay.type = "button";
-      replay.addEventListener("click", () => renderRecorded(recorded));
+      replay.addEventListener("click", () =>
+        renderRecordedFallback(recorded, "Live run kept nothing."));
       actions.appendChild(replay);
     }
     box.appendChild(actions);
@@ -368,21 +385,15 @@ export function initInput(): void {
       if (seq !== runSeq) return;
 
       if (resp.status === 429) {
-        setStatus(
-          "The demo's request quota is used up for now — try again in a little while.",
-          true,
-        );
+        failWithFallback("The demo's request quota is used up for now.");
         return;
       }
       if (!resp.ok || !resp.body) {
         const body = (await resp.json().catch(() => null)) as
           | { error?: string }
           | null;
-        setStatus(
-          body?.error
-            ? `${body.error}.`
-            : "The model call failed. Nothing was computed from a partial answer — try again in a minute.",
-          true,
+        failWithFallback(
+          body?.error ? `${body.error}.` : "The model call failed.",
         );
         return;
       }
@@ -424,10 +435,8 @@ export function initInput(): void {
           }
         } else if (parsed.t === "error") {
           finished = true;
-          progressLog.replaceChildren();
-          setStatus(
-            `${typeof parsed.error === "string" ? parsed.error : "The model call failed"}. Nothing was computed from a partial answer.`,
-            true,
+          failWithFallback(
+            `${typeof parsed.error === "string" ? parsed.error : "The model call failed"}.`,
           );
         }
       };
@@ -444,19 +453,11 @@ export function initInput(): void {
       }
       handleLine(buffer);
       if (!finished && seq === runSeq) {
-        progressLog.replaceChildren();
-        setStatus(
-          "The connection ended before the model finished. Nothing was computed from a partial answer — try again.",
-          true,
-        );
+        failWithFallback("The connection ended before the model finished.");
       }
     } catch {
       if (seq === runSeq) {
-        progressLog.replaceChildren();
-        setStatus(
-          "Could not reach the API — check your connection and try again.",
-          true,
-        );
+        failWithFallback("Could not reach the API.");
       }
     } finally {
       window.clearInterval(tick);
