@@ -82,9 +82,8 @@ export function initInput(): void {
     textarea.focus();
   }
 
-  /* Two real headlines up front; the rest behind one tap. An editor
-   * skimming an unfamiliar site gets a simple choice, not a chip cloud. */
-  let samplesExpanded = false;
+  /* All four examples as real headlines — a small news digest. */
+  let samplesExpanded = true;
 
   function renderSamples(): void {
     const frag = document.createDocumentFragment();
