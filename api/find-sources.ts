@@ -1,7 +1,7 @@
 /* POST /api/find-sources — the one model call in the product.
  *
  * A reporter's draft or story idea goes to claude-sonnet-4-6 with the
- * official web search tool (max 8 searches). The model proposes sources
+ * official web search tool (max 5 searches). The model proposes sources
  * across five blindspot categories; the grounding gate in lib/grounding.ts
  * then drops, server-side, every suggestion whose URL did not appear in an
  * actual search result. What survives is returned with an honest
@@ -33,16 +33,16 @@ import { parseSuggestionsArray } from "../lib/parse-answer.js";
 import { SseParser, StreamAccumulator } from "../lib/sse-accumulator.js";
 
 const MAX_INPUT_CHARS = 8000;
-// Live runs with 6-8 searches take 60-90s; the function's maxDuration is
+// Live runs with up to 5 searches take about a minute; maxDuration is
 // 180s in vercel.json, so the model gets 150s before we abort.
 const TIMEOUT_MS = 150_000;
 
 const limiter = createRateLimiter({
-  // Sample chips fire live runs directly, so a browsing editor needs
-  // headroom; the global daily cap is the cost fuse.
-  perIpLimit: 10,
+  // This is a small two-recipient demo. These per-instance counters are only
+  // a guardrail; the Anthropic account limit remains the real cost fuse.
+  perIpLimit: 3,
   perIpWindowMs: 60 * 60 * 1000,
-  globalDailyLimit: 100,
+  globalDailyLimit: 20,
 });
 
 function inputError(res: VercelResponse, message: string): void {
@@ -98,6 +98,14 @@ export default async function handler(
   }
 
   const started = Date.now();
+  const upstreamController = new AbortController();
+  const timeout = setTimeout(() => upstreamController.abort(), TIMEOUT_MS);
+  const clearUpstreamTimeout = (): void => clearTimeout(timeout);
+  res.once("finish", clearUpstreamTimeout);
+  res.once("close", clearUpstreamTimeout);
+  req.on("error", (error) => {
+    if (error.message === "aborted") upstreamController.abort();
+  });
   let response: Response;
   try {
     response = await fetch("https://api.anthropic.com/v1/messages", {
@@ -107,7 +115,7 @@ export default async function handler(
         "anthropic-version": "2023-06-01",
         "content-type": "application/json",
       },
-      signal: AbortSignal.timeout(TIMEOUT_MS),
+      signal: upstreamController.signal,
       body: JSON.stringify({
         model: MODEL,
         max_tokens: MAX_TOKENS,
@@ -197,7 +205,7 @@ export default async function handler(
     return;
   }
   const suggestions = parseSuggestionsArray(content);
-  if (!Array.isArray(suggestions)) {
+  if (!Array.isArray(suggestions) || suggestions.length === 0) {
     send({
       t: "error",
       error:
@@ -209,11 +217,15 @@ export default async function handler(
 
   const { kept, droppedCount } = applyGroundingGate(suggestions, searchUrls);
   if (droppedCount > 0) {
-    // Operator-facing diagnosis: which check failed, per drop. Suggestion
-    // text is model output about public sources — not reader PII.
+    // Production logs retain only aggregate failure reasons. The local
+    // harness prints full diagnostics when prompt work needs them.
+    const reasonCounts: Record<string, number> = {};
+    for (const drop of explainDrops(suggestions, searchUrls)) {
+      reasonCounts[drop.reason] = (reasonCounts[drop.reason] ?? 0) + 1;
+    }
     console.error(
       `gate dropped ${droppedCount}/${suggestions.length}:`,
-      JSON.stringify(explainDrops(suggestions, searchUrls)),
+      JSON.stringify(reasonCounts),
     );
   }
 
@@ -224,10 +236,6 @@ export default async function handler(
     dropped_count: droppedCount,
     // The count the wire narrated — never a second, disagreeing number.
     searches_run: acc.searchesRun,
-    usage: {
-      input_tokens: acc.usage.input_tokens ?? null,
-      output_tokens: acc.usage.output_tokens ?? null,
-    },
     model: MODEL,
     ms: Date.now() - started,
   });

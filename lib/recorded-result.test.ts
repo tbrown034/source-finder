@@ -26,6 +26,13 @@ describe("recorded fixtures — replayed data still passes the live gate", () =>
         ).toContain(fixture.sampleId);
       });
 
+      it("uses the sample's input mode", () => {
+        const expected = SAMPLE_DRAFTS.some((s) => s.id === fixture.sampleId)
+          ? "draft"
+          : "idea";
+        expect(fixture.mode).toBe(expected);
+      });
+
       it("every recorded suggestion passes the grounding gate", () => {
         const { kept, droppedCount } = applyGroundingGate(
           fixture.suggestions,

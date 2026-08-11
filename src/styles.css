@@ -1,11 +1,5 @@
-/* The wire desk — a front-page design system, hand-rolled.
- *
- * Nameplate in Chomsky (the blackletter every newsreader recognizes),
- * editorial text in Spectral, UI details in a quiet sans, wire copy in
- * mono. Newsprint ground, one press-green accent, hairline and double
- * rules instead of cards and shadows. Fonts are self-hosted — the strict
- * CSP allows no third-party requests. Light and dark from one token set;
- * print keeps the leads and their URLs legible on paper. */
+/* A compact editorial interface: Spectral for reading, system sans for UI,
+ * one green accent, self-hosted fonts, light/dark tokens, and print styles. */
 
 @font-face {
   font-family: "Spectral";
@@ -34,7 +28,7 @@
   --surface: #FDFBF4;
   --ink: #1F241F;
   --ink-2: #525B54;
-  --ink-3: #6E7770;
+  --ink-3: #687169;
   --line: #D9D4C5;
   --rule: #2A302A;
   --accent: #1E5E4E;
@@ -126,18 +120,13 @@ body {
   margin: 0 0 14px;
 }
 
-.how {
+.deck {
   font-family: var(--serif);
   font-size: 16px;
   color: var(--ink-2);
   margin: 0;
-  padding-left: 22px;
   max-width: 62ch;
 }
-
-.how li { margin: 0 0 6px; }
-
-.how a { color: var(--accent); }
 
 /* --- the desk (input) --- */
 
@@ -247,10 +236,6 @@ summary:focus-visible {
   white-space: nowrap;
 }
 
-.sample-more {
-  font-size: 12.5px;
-}
-
 .sample-note {
   font-family: var(--serif);
   font-style: italic;
@@ -270,7 +255,7 @@ textarea {
   padding: 12px 14px;
   font: 15px/1.6 var(--serif);
   resize: vertical;
-  min-height: 170px;
+  min-height: 140px;
 }
 
 textarea::placeholder { color: var(--ink-3); font-style: italic; }

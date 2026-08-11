@@ -269,14 +269,6 @@ export const RECORDED_RESULTS: readonly RecordedResult[] = [
       },
       {
         "category": "designed-out",
-        "who_or_what": "Milby's predominantly Latino student community and Spanish-language coverage gap",
-        "why_needed": "The draft profiles Milby's Artavion Davis and Gabriel Gutierrez — a school whose roster is overwhelmingly Latino (surnames like Gutierrez, Barcenas, Recinos, Solorzano, Cruz, Lozano, Zamora dominate the roster) — without any Spanish-language outlet or community voice; the DefenderNetwork covered Davis from a Black Houston perspective but no Spanish-language outlet is represented.",
-        "url": "https://defendernetwork.com/sports/high-school/artavion-davis-junior-wide-receiver-milby/",
-        "source_title": "Junior WR Artavion Davis shines at Milby High School - DefenderNetwork.com",
-        "why_good": "Milby is located in Houston's East End, a historically Mexican-American neighborhood; community members who follow the team primarily in Spanish are entirely absent from a preview that centers their school's players."
-      },
-      {
-        "category": "designed-out",
         "who_or_what": "North Forest and Wheatley — under-resourced HISD schools whose defensive stars (Javeon Taylor, Da'Veon Perkins, Peter Dorsey) receive no program context",
         "why_needed": "The draft lists defensive standouts from North Forest and Wheatley with zero context about those schools' resource levels, playoff histories, or community significance; readers outside the area have no way to understand what producing a 26-sack defender or a 9-interception defensive back means for programs that have historically operated with far less than their suburban counterparts.",
         "url": "https://texashsfootball.com/houston-heights-bulldogs-2026-season-preview/",
@@ -339,14 +331,6 @@ export const RECORDED_RESULTS: readonly RecordedResult[] = [
     "sampleId": "cdl-english",
     "mode": "draft",
     "suggestions": [
-      {
-        "category": "affected",
-        "who_or_what": "Immigrant and non-citizen CDL holders whose licenses Texas has already revoked or who are actively trying to comply — people like the named trucker 'Viera' in Houston Public Media's reporting",
-        "why_needed": "The draft quotes two industry executives but no currently licensed or newly unlicensed driver; the Houston Public Media story shows bilingual, Houston-educated truckers whose licenses were stripped — voices the draft entirely omits.",
-        "url": "https://www.houstonpublicmedia.org/articles/news/politics/immigration/2026/05/11/551453/texas-cdl-cancel-noncitizen-truck-drivers-struggle/",
-        "source_title": "Texas took their licenses. Now these immigrant truckers face lost livelihoods, sense of betrayal – Houston Public Media",
-        "why_good": "Houston Public Media's May 2026 story documents named individuals directly affected in Houston, the story's primary geographic market, providing on-the-ground proximity no trade voice can supply."
-      },
       {
         "category": "affected",
         "who_or_what": "League of United Latin American Citizens (LULAC) — specifically the Galveston County Council, whose president Robert Quintero is already on record about this exact policy",
