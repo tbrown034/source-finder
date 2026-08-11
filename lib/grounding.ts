@@ -11,7 +11,7 @@
  * Pure functions, no I/O — unit-tested in grounding.test.ts and re-run
  * in the browser over the committed sample fixture. */
 
-import { isKnownCategory } from "./categories.js";
+import { isKnownCategory, normalizeCategory } from "./categories.js";
 
 export interface Suggestion {
   category: string;
@@ -115,7 +115,14 @@ export function applyGroundingGate(
   if (!Array.isArray(suggestions)) return { kept: [], droppedCount: 0 };
   const kept: Suggestion[] = [];
   let droppedCount = 0;
-  for (const s of suggestions) {
+  for (const raw of suggestions) {
+    // Deterministic label->id repair happens BEFORE validation; it never
+    // invents a category, only maps the five official labels back.
+    let s = raw;
+    if (typeof raw === "object" && raw !== null) {
+      const mapped = normalizeCategory((raw as { category?: unknown }).category);
+      if (mapped !== null) s = { ...(raw as object), category: mapped };
+    }
     if (!isWellFormed(s)) {
       droppedCount++;
       continue;
@@ -128,6 +135,82 @@ export function applyGroundingGate(
     }
   }
   return { kept, droppedCount };
+}
+
+/* Diagnostic companion to the gate: says, per dropped suggestion, WHICH
+ * check failed — so an all-dropped run is explainable from logs instead
+ * of a mystery. Never used to un-drop anything. */
+export interface DropExplanation {
+  who_or_what: string;
+  reason:
+    | "unknown_category"
+    | "missing_field"
+    | "unparseable_url"
+    | "url_not_in_search_results";
+  category?: string;
+  url?: string;
+  normalizedUrl?: string;
+  closestSearchUrl?: string;
+}
+
+function closestMatch(target: string, candidates: Set<string>): string | null {
+  let best: string | null = null;
+  let bestLen = 0;
+  for (const c of candidates) {
+    let i = 0;
+    const max = Math.min(target.length, c.length);
+    while (i < max && target[i] === c[i]) i++;
+    if (i > bestLen) {
+      bestLen = i;
+      best = c;
+    }
+  }
+  return best;
+}
+
+export function explainDrops(
+  suggestions: unknown,
+  searchUrls: Set<string>,
+): DropExplanation[] {
+  const out: DropExplanation[] = [];
+  if (!Array.isArray(suggestions)) return out;
+  for (const s of suggestions) {
+    if (typeof s !== "object" || s === null) {
+      out.push({ who_or_what: "(non-object)", reason: "missing_field" });
+      continue;
+    }
+    const o = s as Record<string, unknown>;
+    const who = typeof o.who_or_what === "string" ? o.who_or_what : "(unnamed)";
+    const mapped = normalizeCategory(o.category);
+    if (mapped === null) {
+      out.push({
+        who_or_what: who,
+        reason: "unknown_category",
+        category: typeof o.category === "string" ? o.category : String(o.category),
+      });
+      continue;
+    }
+    if (!isWellFormed({ ...o, category: mapped })) {
+      out.push({ who_or_what: who, reason: "missing_field" });
+      continue;
+    }
+    const url = String(o.url);
+    const normalized = normalizeUrl(url);
+    if (normalized === null) {
+      out.push({ who_or_what: who, reason: "unparseable_url", url });
+      continue;
+    }
+    if (!searchUrls.has(normalized)) {
+      out.push({
+        who_or_what: who,
+        reason: "url_not_in_search_results",
+        url,
+        normalizedUrl: normalized,
+        closestSearchUrl: closestMatch(normalized, searchUrls) ?? undefined,
+      });
+    }
+  }
+  return out;
 }
 
 /* Optional fields follow the same rule as the suggestion itself: contact

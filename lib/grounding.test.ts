@@ -202,6 +202,34 @@ describe("the grounding gate — no from-memory citations survive", () => {
     expect(result.kept).toHaveLength(0);
   });
 
+  it("maps the five official category LABELS back to ids (deterministic repair)", () => {
+    const urls = collectSearchUrls(
+      searchResponse(["https://www.fema.gov/openfema-data-page"]),
+    );
+    const result = applyGroundingGate(
+      [
+        good({ category: "Data and public records that could ground the story" }),
+        good({ category: "people affected who aren't quoted" }), // case-insensitive
+      ],
+      urls,
+    );
+    expect(result.kept).toHaveLength(2);
+    expect(result.kept[0]?.category).toBe("data");
+    expect(result.kept[1]?.category).toBe("affected");
+  });
+
+  it("label mapping never invents a category from a near-miss", () => {
+    const urls = collectSearchUrls(
+      searchResponse(["https://www.fema.gov/openfema-data-page"]),
+    );
+    const result = applyGroundingGate(
+      [good({ category: "Data and public records" })], // partial label
+      urls,
+    );
+    expect(result.kept).toHaveLength(0);
+    expect(result.droppedCount).toBe(1);
+  });
+
   it("handles non-array model output without throwing", () => {
     expect(applyGroundingGate(null, new Set()).kept).toHaveLength(0);
     expect(applyGroundingGate({ suggestions: [] }, new Set()).kept).toHaveLength(0);

@@ -20,6 +20,7 @@ import { clientIp, createRateLimiter, QUOTA_BODY } from "./_shared.js";
 import {
   applyGroundingGate,
   collectSearchUrls,
+  explainDrops,
 } from "../lib/grounding.js";
 import {
   buildUserContent,
@@ -180,6 +181,19 @@ export default async function handler(
 
   const content = acc.content();
   const searchUrls = collectSearchUrls(content);
+  if (searchUrls.size === 0) {
+    // No usable search results means nothing can be grounded — that is a
+    // failed run to retry, not an empty result to present. The gate is
+    // not weakened; there is simply nothing for it to pass.
+    console.error("web search returned no usable results; nothing to ground against");
+    send({
+      t: "error",
+      error:
+        "web search returned no usable results this run, so nothing could be grounded — try again in a moment",
+    });
+    res.end();
+    return;
+  }
   const suggestions = parseSuggestionsArray(content);
   if (!Array.isArray(suggestions)) {
     send({
@@ -192,6 +206,14 @@ export default async function handler(
   }
 
   const { kept, droppedCount } = applyGroundingGate(suggestions, searchUrls);
+  if (droppedCount > 0) {
+    // Operator-facing diagnosis: which check failed, per drop. Suggestion
+    // text is model output about public sources — not reader PII.
+    console.error(
+      `gate dropped ${droppedCount}/${suggestions.length}:`,
+      JSON.stringify(explainDrops(suggestions, searchUrls)),
+    );
+  }
 
   send({
     t: "done",
