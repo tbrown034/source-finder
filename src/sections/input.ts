@@ -356,9 +356,13 @@ export function initInput(): void {
     secondsEl.setAttribute("aria-hidden", "true");
     line.appendChild(secondsEl);
     status.replaceChildren(line);
-    // Bring the ticker into view — on mobile the button sits low enough
-    // that a run can otherwise start entirely off-screen.
-    status.scrollIntoView({ behavior: "smooth", block: "start" });
+    // Bring the run into view gently: land on the button row so the
+    // reporter keeps their bearings, with the status and ticker below —
+    // scrolling the status itself to the top reads as a jarring jump.
+    (findBtn.closest(".input-footer") ?? status).scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
     writingLine = null;
     const tick = window.setInterval(() => {
       if (seq !== runSeq) return; // superseded — stop touching the status
