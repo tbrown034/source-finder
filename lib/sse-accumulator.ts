@@ -30,6 +30,9 @@ export interface Usage {
 export class StreamAccumulator {
   private blocks = new Map<number, BlockState>();
   private searchCount = 0;
+  /* server_tool_use id → search number, so results attribute to the
+   * right search even when they arrive out of order */
+  private searchIds = new Map<string, number>();
   private sawText = false;
   usage: Usage = {};
 
@@ -47,13 +50,20 @@ export class StreamAccumulator {
         this.blocks.set(index, { block, partialJson: "", text: "" });
         if (block.type === "server_tool_use") {
           this.searchCount++;
+          if (typeof block.id === "string") {
+            this.searchIds.set(block.id, this.searchCount);
+          }
           return { kind: "search_started", n: this.searchCount };
         }
         if (block.type === "web_search_tool_result") {
           const content = block.content;
+          const toolUseId = block.tool_use_id;
+          const n = typeof toolUseId === "string"
+            ? this.searchIds.get(toolUseId) ?? this.searchCount
+            : this.searchCount;
           return {
             kind: "search_returned",
-            n: this.searchCount,
+            n,
             resultCount: Array.isArray(content) ? content.length : 0,
           };
         }

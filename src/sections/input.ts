@@ -257,7 +257,8 @@ export function initInput(): void {
     }
     if (p.kind === "search_started" && p.query) {
       lineEl.textContent = `${stamp()}  search ${n}  “${p.query}”`;
-    } else if (p.kind === "search_returned") {
+    } else if (p.kind === "search_returned" && !lineEl.dataset.returned) {
+      lineEl.dataset.returned = "1";
       lineEl.textContent = `${lineEl.textContent} — ${p.resultCount ?? 0} results`;
     }
     progressLog.scrollTop = progressLog.scrollHeight;

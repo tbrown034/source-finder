@@ -74,6 +74,31 @@ describe("StreamAccumulator — streaming events reassemble to the sync shape", 
     expect(acc.usage.output_tokens).toBe(55);
   });
 
+  it("attributes out-of-order results to the right search via tool_use_id", () => {
+    const acc = new StreamAccumulator();
+    acc.feed({
+      type: "content_block_start",
+      index: 0,
+      content_block: { type: "server_tool_use", id: "s1", name: "web_search", input: {} },
+    });
+    acc.feed({
+      type: "content_block_start",
+      index: 1,
+      content_block: { type: "server_tool_use", id: "s2", name: "web_search", input: {} },
+    });
+    // search 1's result arrives after search 2 started
+    const p = acc.feed({
+      type: "content_block_start",
+      index: 2,
+      content_block: {
+        type: "web_search_tool_result",
+        tool_use_id: "s1",
+        content: [{ type: "web_search_result", url: "https://a.gov/x", title: "X" }],
+      },
+    });
+    expect(p).toEqual({ kind: "search_returned", n: 1, resultCount: 1 });
+  });
+
   it("does not announce writing for a no-search response", () => {
     const acc = new StreamAccumulator();
     const p = acc.feed({
