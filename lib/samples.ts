@@ -48,27 +48,25 @@ Danny Perez, a spokesperson for TxDOT's Houston District, said the agency is rep
 Drivers can report a city street to 311, a state highway through TxDOT's "Road Needs Repair" form, which takes a map pin and a "lane marking visibility" category, or a toll road to HCTRA at 281-584-7500.`,
   },
   {
-    id: "hs-football",
-    chip: "HS football: 3,502-yard rusher",
-    kind: "sports",
-    title: "Returning stat leaders shape the 2026 high school football season",
+    id: "cyfair-bond",
+    chip: "Cy-Fair ISD $1.6B bond",
+    kind: "education beat",
+    title: "Cy-Fair ISD sends $1.6B bond and tax rate increase to voters",
     basedOnUrl:
-      "https://www.houstonchronicle.com/sports/high-school/football/article/houston-high-school-football-returning-stat-leader-22357293.php",
-    basedOnLabel: "Houston Chronicle: Houston high school football: Top returning stat leaders for 2026",
+      "https://www.houstonchronicle.com/news/houston-texas/education/article/bond-tax-increase-cy-fair-22372059.php",
+    basedOnLabel: "Houston Chronicle: Cy-Fair ISD puts $1.6B bond, tax rate increase on November ballot",
     text:
-      `The 2026 Houston high school football season opens with an unusual amount of production coming back on the field. A review of last season's statistical leaders who are set to return shows a quarterback, a running back and a receiver each bringing back numbers that would have topped most area seasons outright.
+      `Cypress-Fairbanks ISD trustees voted Monday night to put a 12-cent tax rate increase and a $1.6 billion bond before voters in November, a decision district leaders framed as the only way out of an $80 million deficit.
 
-Willis sophomore Lincoln Frazier returns as the leading passer after throwing for 4,232 yards. His 43 touchdown passes tie him with two seniors: Summer Creek's Noah Spinks, who threw for 3,690 yards, and Dickinson's Lorenzo Aguirre, who threw for 3,410.
+The tax measure would raise about $100 million a year for operations and fund one-time stipends the district has promised staff — $2,000 for hourly employees and $1,000 for everyone else. The bond, split into four propositions, would pay for building renovations, bus replacements, student laptops and athletics and pool repairs.
 
-The widest margin in the area belongs to Randle senior Landen Williams-Callis, who ran for 3,502 yards and 59 touchdowns. The next returning rusher, La Porte junior Sean Simon, finished with 2,191 yards and 25 scores, leaving Williams-Callis more than 1,300 yards and 34 touchdowns clear of the field.
+Trustee Christine Kalmbach cast the lone vote against the election order. "This is sending this to the voters, to our neighbors, to ask them, 'What do you want?'" trustee Kendra Camarena said.
 
-Milby returns both halves of a productive passing game: senior Artavion Davis led area receivers with 1,602 yards and 22 touchdowns, and quarterback Gabriel Gutierrez threw for 3,033 yards.
+Superintendent Douglas Killian said bus transportation would be among the first services cut if voters reject the increase, followed by "people and programs." The district has cut roughly $100 million over three years, including librarians, counselors and instructional support positions that were never restored.
 
-On defense, Willis senior Cayden Williams comes back after 150 tackles. Wheatley junior Peter Dorsey led the area with 43 tackles for loss. North Forest returns two leaders of its own in senior Javeon Taylor, who had 26 sacks, and senior Da'Veon Perkins, who intercepted nine passes. Cypress Falls senior Kaden McCarty had 12 sacks and 26 tackles for loss.
+An efficiency audit required before the election found Cy-Fair receives about $1,200 less per student than peer districts and nearly $2,000 less than the state average, partly because of a 20% local homestead exemption that costs the district more than $70 million a year.
 
-Others worth tracking: Barbers Hill junior Luke Babin, who threw for 3,063 yards and 40 touchdowns, Crawford senior Braylen Fisher and Cy-Fair's Sean Riegler.
-
-Coaches who find an error in these totals are asked to send corrections to the high school sports desk.`,
+District officials estimate the increase would cost the owner of a median-value $322,000 home about $160 a year. Killian has sent letters to the state education commissioner for three straight years asking the state to cover part of the gap. He says he has never received a response.`,
   },
   {
     id: "cdl-english",
@@ -92,25 +90,27 @@ John D. Esparza, president and chief executive of the Texas Trucking Association
 The testing change lands alongside other restrictions. Texas has stopped issuing commercial licenses to refugees, asylum seekers and recipients of Deferred Action for Childhood Arrivals under new federal rules limiting non-citizens. Attorney General Ken Paxton is investigating several Texas truck driving schools, alleging they certified drivers who were unqualified or could not speak English.`,
   },
   {
-    id: "cyfair-bond",
-    chip: "Cy-Fair ISD $1.6B bond",
-    kind: "education beat",
-    title: "Cy-Fair ISD sends $1.6B bond and tax rate increase to voters",
+    id: "hs-football",
+    chip: "HS football: 3,502-yard rusher",
+    kind: "sports",
+    title: "Returning stat leaders shape the 2026 high school football season",
     basedOnUrl:
-      "https://www.houstonchronicle.com/news/houston-texas/education/article/bond-tax-increase-cy-fair-22372059.php",
-    basedOnLabel: "Houston Chronicle: Cy-Fair ISD puts $1.6B bond, tax rate increase on November ballot",
+      "https://www.houstonchronicle.com/sports/high-school/football/article/houston-high-school-football-returning-stat-leader-22357293.php",
+    basedOnLabel: "Houston Chronicle: Houston high school football: Top returning stat leaders for 2026",
     text:
-      `Cypress-Fairbanks ISD trustees voted Monday night to put a 12-cent tax rate increase and a $1.6 billion bond before voters in November, a decision district leaders framed as the only way out of an $80 million deficit.
+      `The 2026 Houston high school football season opens with an unusual amount of production coming back on the field. A review of last season's statistical leaders who are set to return shows a quarterback, a running back and a receiver each bringing back numbers that would have topped most area seasons outright.
 
-The tax measure would raise about $100 million a year for operations and fund one-time stipends the district has promised staff — $2,000 for hourly employees and $1,000 for everyone else. The bond, split into four propositions, would pay for building renovations, bus replacements, student laptops and athletics and pool repairs.
+Willis sophomore Lincoln Frazier returns as the leading passer after throwing for 4,232 yards. His 43 touchdown passes tie him with two seniors: Summer Creek's Noah Spinks, who threw for 3,690 yards, and Dickinson's Lorenzo Aguirre, who threw for 3,410.
 
-Trustee Christine Kalmbach cast the lone vote against the election order. "This is sending this to the voters, to our neighbors, to ask them, 'What do you want?'" trustee Kendra Camarena said.
+The widest margin in the area belongs to Randle senior Landen Williams-Callis, who ran for 3,502 yards and 59 touchdowns. The next returning rusher, La Porte junior Sean Simon, finished with 2,191 yards and 25 scores, leaving Williams-Callis more than 1,300 yards and 34 touchdowns clear of the field.
 
-Superintendent Douglas Killian said bus transportation would be among the first services cut if voters reject the increase, followed by "people and programs." The district has cut roughly $100 million over three years, including librarians, counselors and instructional support positions that were never restored.
+Milby returns both halves of a productive passing game: senior Artavion Davis led area receivers with 1,602 yards and 22 touchdowns, and quarterback Gabriel Gutierrez threw for 3,033 yards.
 
-An efficiency audit required before the election found Cy-Fair receives about $1,200 less per student than peer districts and nearly $2,000 less than the state average, partly because of a 20% local homestead exemption that costs the district more than $70 million a year.
+On defense, Willis senior Cayden Williams comes back after 150 tackles. Wheatley junior Peter Dorsey led the area with 43 tackles for loss. North Forest returns two leaders of its own in senior Javeon Taylor, who had 26 sacks, and senior Da'Veon Perkins, who intercepted nine passes. Cypress Falls senior Kaden McCarty had 12 sacks and 26 tackles for loss.
 
-District officials estimate the increase would cost the owner of a median-value $322,000 home about $160 a year. Killian has sent letters to the state education commissioner for three straight years asking the state to cover part of the gap. He says he has never received a response.`,
+Others worth tracking: Barbers Hill junior Luke Babin, who threw for 3,063 yards and 40 touchdowns, Crawford senior Braylen Fisher and Cy-Fair's Sean Riegler.
+
+Coaches who find an error in these totals are asked to send corrections to the high school sports desk.`,
   },
 ] as const;
 
@@ -131,10 +131,10 @@ export const STORY_IDEAS: readonly StoryIdea[] = [
     text: "Houston readies for the peak of hurricane season — checking whether promised fixes to power, drainage and emergency shelters actually happened.",
   },
   {
-    id: "uil-heat-rules",
-    kind: "sports",
-    chip: "New UIL heat rules, week one",
-    text: "New UIL rules now force Texas schools to shorten or cancel outdoor practice on wet-bulb heat readings. What Houston-area districts, athletes and band parents are living with.",
+    id: "hisd-takeover",
+    kind: "education beat",
+    chip: "HISD takeover, year three",
+    text: "Three years into the state takeover of Houston ISD — with the TEA extension running to 2027 and a dozen campuses closing, what has changed for students and teachers.",
   },
   {
     id: "gulfton-rebuild",
@@ -143,9 +143,9 @@ export const STORY_IDEAS: readonly StoryIdea[] = [
     text: "Gulfton, one of Houston's densest immigrant neighborhoods, is getting a $43 million federally funded street, drainage and tree-planting overhaul. Who was asked, and in what language.",
   },
   {
-    id: "hisd-takeover",
-    kind: "education beat",
-    chip: "HISD takeover, year three",
-    text: "Three years into the state takeover of Houston ISD — with the TEA extension running to 2027 and a dozen campuses closing, what has changed for students and teachers.",
+    id: "uil-heat-rules",
+    kind: "sports",
+    chip: "New UIL heat rules, week one",
+    text: "New UIL rules now force Texas schools to shorten or cancel outdoor practice on wet-bulb heat readings. What Houston-area districts, athletes and band parents are living with.",
   },
 ] as const;

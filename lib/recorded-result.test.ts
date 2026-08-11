@@ -6,7 +6,7 @@
 import { describe, expect, it } from "vitest";
 import { RECORDED_RESULTS } from "./recorded-result.js";
 import { applyGroundingGate } from "./grounding.js";
-import { CATEGORY_IDS } from "./categories.js";
+import { CATEGORY_IDS, normalizeCategory } from "./categories.js";
 import { SAMPLE_DRAFTS, STORY_IDEAS } from "./samples.js";
 
 describe("recorded fixtures — replayed data still passes the live gate", () => {
@@ -42,9 +42,11 @@ describe("recorded fixtures — replayed data still passes the live gate", () =>
         expect(kept).toHaveLength(fixture.suggestions.length);
       });
 
-      it("uses only known categories", () => {
+      it("uses only known or legacy-mappable categories", () => {
         for (const s of fixture.suggestions) {
-          expect(CATEGORY_IDS).toContain(s.category);
+          const mapped = normalizeCategory(s.category);
+          expect(mapped, `category "${s.category}" must normalize`).not.toBeNull();
+          expect(CATEGORY_IDS).toContain(mapped);
         }
       });
 

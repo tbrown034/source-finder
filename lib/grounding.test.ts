@@ -202,7 +202,23 @@ describe("the grounding gate — no from-memory citations survive", () => {
     expect(result.kept).toHaveLength(0);
   });
 
-  it("maps the five official category LABELS back to ids (deterministic repair)", () => {
+  it("maps the retired designed-out category into affected (fixture safety)", () => {
+    const urls = collectSearchUrls(
+      searchResponse(["https://www.fema.gov/openfema-data-page"]),
+    );
+    const result = applyGroundingGate(
+      [
+        good({ category: "designed-out" }),
+        good({ category: "Who does this story design out?" }),
+      ],
+      urls,
+    );
+    expect(result.kept).toHaveLength(2);
+    expect(result.kept[0]?.category).toBe("affected");
+    expect(result.kept[1]?.category).toBe("affected");
+  });
+
+  it("maps official category LABELS back to ids (deterministic repair)", () => {
     const urls = collectSearchUrls(
       searchResponse(["https://www.fema.gov/openfema-data-page"]),
     );

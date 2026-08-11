@@ -117,7 +117,7 @@ export function applyGroundingGate(
   let droppedCount = 0;
   for (const raw of suggestions) {
     // Deterministic label->id repair happens BEFORE validation; it never
-    // invents a category, only maps the five official labels back.
+    // invents a category, only maps official or legacy labels back.
     let s = raw;
     if (typeof raw === "object" && raw !== null) {
       const mapped = normalizeCategory((raw as { category?: unknown }).category);

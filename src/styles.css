@@ -399,6 +399,18 @@ textarea::placeholder { color: var(--ink-3); font-style: italic; }
   margin: 0 0 6px;
 }
 
+.result-intro {
+  font-family: var(--serif);
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--ink-2);
+  border: 1px solid var(--line);
+  border-left: 6px solid var(--accent);
+  border-radius: 2px;
+  padding: 12px 16px;
+  margin: 12px 0 12px;
+}
+
 .verify-note {
   font-family: var(--serif);
   font-size: 15px;

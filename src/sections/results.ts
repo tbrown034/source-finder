@@ -1,4 +1,4 @@
-/* Renders a result — recorded replay or live — grouped by the five
+/* Renders a result — recorded replay or live — grouped by the four
  * blindspot categories. Every render carries the verify-before-contacting
  * line and an honest dropped-count when suggestions were gated out. */
 
@@ -35,13 +35,22 @@ export function renderResults(
   gateBits.push(
     opts.droppedCount > 0
       ? `${opts.droppedCount} suggestion${opts.droppedCount === 1 ? "" : "s"} dropped for lacking a grounding search result`
-      : "every suggestion below is grounded in a search result",
+      : "every suggestion below links the web search result it came from",
   );
   if (opts.ms !== null) gateBits.push(`${(opts.ms / 1000).toFixed(1)}s`);
   if (opts.estimatedCostUsd !== null) {
     gateBits.push(`estimated API cost $${opts.estimatedCostUsd.toFixed(2)}`);
   }
   frag.appendChild(el("p", "result-meta", gateBits.join(" · ")));
+
+  const intro = el("p", "result-intro");
+  intro.appendChild(el("strong", undefined, "A second set of eyes, not a grade."));
+  intro.appendChild(
+    document.createTextNode(
+      " Every story has more possible voices than any one reporter can chase — that's the job, not a flaw in your draft. If this one stays a quick hit, skip all of this. If it grows into something bigger, here are leads worth a look.",
+    ),
+  );
+  frag.appendChild(intro);
 
   const verify = el("p", "verify-note");
   verify.appendChild(el("strong", "verify-lead", "Verify before contacting."));
@@ -89,7 +98,9 @@ export function renderResults(
         li.appendChild(contact);
       }
       const ground = el("p", "ground");
-      ground.appendChild(document.createTextNode("Grounding: "));
+      ground.appendChild(
+        document.createTextNode("Source — found in this run's web search: "),
+      );
       const a = document.createElement("a");
       a.href = item.url;
       a.textContent = item.source_title || item.url;
@@ -104,5 +115,5 @@ export function renderResults(
   }
 
   root.replaceChildren(frag);
-  root.scrollIntoView({ behavior: "auto", block: "nearest" });
+  root.scrollIntoView({ behavior: "smooth", block: "nearest" });
 }

@@ -222,6 +222,10 @@ export function initInput(): void {
    * of the work, not a spinner. */
   const searchLines = new Map<number, HTMLElement>();
   let wireStart = 0;
+  /* The writing phase is the longest silent stretch (~30s). Keep the line
+   * and its start time so the 1s ticker can keep it visibly alive. */
+  let writingLine: HTMLElement | null = null;
+  let writingStart = 0;
 
   function stamp(): string {
     const s = Math.max(0, Math.round((Date.now() - wireStart) / 1000));
@@ -243,13 +247,14 @@ export function initInput(): void {
       return;
     }
     if (p.kind === "writing") {
-      progressLog.appendChild(
-        el(
-          "p",
-          "progress-item",
-          `${stamp()}  searches complete — writing suggestions`,
-        ),
+      writingLine = el(
+        "p",
+        "progress-item",
+        `${stamp()}  searches complete — writing suggestions`,
       );
+      writingLine.dataset.prefix = `${stamp()}  searches complete — writing suggestions`;
+      writingStart = Date.now();
+      progressLog.appendChild(writingLine);
       progressLog.scrollTop = progressLog.scrollHeight;
       return;
     }
@@ -345,16 +350,25 @@ export function initInput(): void {
     const line = el(
       "p",
       "status-line",
-      "Working — the model is reading your text and searching the web. Each search appears below as it runs; this usually takes about a minute. ",
+      "Working — the model is reading your text and searching the web. Each search appears below as it runs; this usually takes under a minute. ",
     );
     const secondsEl = el("span", undefined, "");
     secondsEl.setAttribute("aria-hidden", "true");
     line.appendChild(secondsEl);
     status.replaceChildren(line);
+    // Bring the ticker into view — on mobile the button sits low enough
+    // that a run can otherwise start entirely off-screen.
+    status.scrollIntoView({ behavior: "smooth", block: "start" });
+    writingLine = null;
     const tick = window.setInterval(() => {
       if (seq !== runSeq) return; // superseded — stop touching the status
       const s = Math.round((Date.now() - startedAt) / 1000);
       secondsEl.textContent = `(${s}s)`;
+      if (writingLine) {
+        const w = Math.round((Date.now() - writingStart) / 1000);
+        writingLine.textContent = `${writingLine.dataset.prefix} (${w}s)` +
+          (w >= 25 ? " — almost there" : "");
+      }
     }, 1000);
 
     try {
