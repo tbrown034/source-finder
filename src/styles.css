@@ -107,24 +107,37 @@ body {
   padding: 30px 20px 72px;
 }
 
-.brief { text-align: center; margin-bottom: 30px; }
+.brief { margin-bottom: 28px; }
 
 .headline {
   font-family: var(--serif);
   font-weight: 600;
   font-size: clamp(26px, 4.6vw, 36px);
   line-height: 1.18;
-  margin: 0 0 10px;
+  margin: 0 0 4px;
   text-wrap: balance;
 }
 
-.dek {
-  font-family: var(--serif);
-  font-size: 16.5px;
+.byline {
+  font: 700 12px var(--sans);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
   color: var(--ink-2);
-  margin: 0 auto;
-  max-width: 56ch;
+  margin: 0 0 14px;
 }
+
+.how {
+  font-family: var(--serif);
+  font-size: 16px;
+  color: var(--ink-2);
+  margin: 0;
+  padding-left: 22px;
+  max-width: 62ch;
+}
+
+.how li { margin: 0 0 6px; }
+
+.how a { color: var(--accent); }
 
 /* --- the desk (input) --- */
 

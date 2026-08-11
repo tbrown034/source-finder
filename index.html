@@ -16,12 +16,17 @@
   <main class="wrap">
     <section class="brief" aria-labelledby="briefH">
       <h1 id="briefH" class="headline">Who is your story missing?</h1>
-      <p class="dek">
-        Paste a draft or describe a story idea. The desk reads it, runs real
-        web searches, and returns the sources and perspectives the story may
-        be missing — grouped by blindspot, every suggestion grounded in a
-        live search result.
-      </p>
+      <p class="byline">By Trevor Brown</p>
+      <ol class="how">
+        <li>Paste a full draft or describe a story idea, then click
+        Find missed sources.</li>
+        <li>The AI-powered app reads it and uses Claude's
+        <a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-search-tool"
+          rel="noopener" target="_blank">web search tool</a> to look for
+        sources the draft or idea might be missing.</li>
+        <li>Results come back grouped by blindspot — every suggestion
+        grounded in a live search result, with attribution.</li>
+      </ol>
     </section>
 
     <section class="desk" aria-labelledby="inputH">
@@ -61,7 +66,7 @@
       <div id="results"></div>
     </section>
 
-    <details class="disclosure">
+    <details class="disclosure" open>
       <summary>What this does, what gets sent, and what it never does</summary>
       <div class="disclosure-body">
         <p><strong>What the AI does.</strong> One model call per live
