@@ -11,6 +11,9 @@ export interface RenderOptions {
   droppedCount: number;
   searchesRun: number | null;
   ms: number | null;
+  /* When set (recorded replays), renders a visible action that triggers
+   * the real fetch — replay by default, live on demand. */
+  onRunLive?: () => void;
 }
 
 export function clearResults(): void {
@@ -25,6 +28,13 @@ export function renderResults(
   const frag = document.createDocumentFragment();
 
   const meta = el("p", "result-meta", opts.provenance);
+  if (opts.onRunLive) {
+    meta.appendChild(document.createTextNode(" "));
+    const live = el("button", "linklike", "Run it live instead") as HTMLButtonElement;
+    live.type = "button";
+    live.addEventListener("click", opts.onRunLive);
+    meta.appendChild(live);
+  }
   frag.appendChild(meta);
 
   const gateBits: string[] = [];

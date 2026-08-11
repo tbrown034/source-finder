@@ -64,14 +64,17 @@
     <details class="disclosure">
       <summary>What this does, what gets sent, and what it never does</summary>
       <div class="disclosure-body">
-        <p><strong>What the AI does.</strong> One model call per request:
-        Claude (claude-haiku-4-5, by Anthropic) reads your text, runs up to
-        five real web searches, and proposes sources across five blindspot
-        categories. Server-side code then drops every suggestion that is not
-        backed by an actual search result URL — if the model cannot ground a
-        suggestion in a search it ran, you never see it. The page tells you
-        how many were dropped. Every run is live and unique — nothing is
-        cached or replayed.</p>
+        <p><strong>What the AI does.</strong> One model call per live
+        request: Claude (claude-sonnet-4-6, by Anthropic) reads your text,
+        runs up to five real web searches, and proposes sources across five
+        blindspot categories. Server-side code then drops every suggestion
+        that is not backed by an actual search result URL — if the model
+        cannot ground a suggestion in a search it ran, you never see it.
+        The page tells you how many were dropped. Sample chips replay a
+        recorded run instantly, labeled with its model and capture date and
+        re-checked through the same gate in your browser; "Run it live
+        instead" repeats it against the API, and anything you type always
+        runs live.</p>
         <p><strong>What gets sent.</strong> The text you paste is sent to
         Anthropic's API to be read by the model, and the model's search
         queries go out to the web. Nothing is stored by this site; there is

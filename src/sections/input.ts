@@ -1,10 +1,17 @@
 /* The input section: draft/idea mode toggle, clickable samples, character
- * counter, and the one fetch in the product. Sample chips only load text
- * into the box — every result comes from a fresh live run, so no two
- * demos look the same. Every failure path offers a way to start over. */
+ * counter, and the one fetch in the product. Loading a sample chip
+ * replays its recorded run instantly (labeled: model, capture date, no
+ * API call) with a visible "Run it live instead" action; typed or pasted
+ * text always runs live. Labels never blur the two. Every failure path
+ * offers a way to start over.
+ *
+ * Chip clicks are handled by ONE delegated listener on the row, so a
+ * re-render can never orphan a per-button handler mid-click. */
 
 import { SAMPLE_DRAFTS, STORY_IDEAS } from "../../lib/samples.js";
-import type { Suggestion } from "../../lib/grounding.js";
+import { RECORDED_RESULTS } from "../../lib/recorded-result.js";
+import type { RecordedResult } from "../../lib/recorded-result.js";
+import { applyGroundingGate, type Suggestion } from "../../lib/grounding.js";
 import { byId, el } from "../format.js";
 import { clearResults, renderResults } from "./results.js";
 
@@ -86,6 +93,7 @@ export function initInput(): void {
     for (const item of shown) {
       const btn = el("button", "sample-btn") as HTMLButtonElement;
       btn.type = "button";
+      btn.dataset.sampleId = item.id;
       btn.title = mode === "draft"
         ? (item as (typeof SAMPLE_DRAFTS)[number]).title
         : (item as (typeof STORY_IDEAS)[number]).text;
@@ -93,20 +101,10 @@ export function initInput(): void {
         const sample = item as (typeof SAMPLE_DRAFTS)[number];
         btn.appendChild(el("span", "kind", sample.kind));
         btn.appendChild(document.createTextNode(sample.chip));
-        btn.addEventListener("click", () => loadDraftSample(sample.id));
       } else {
-        const idea = item as (typeof STORY_IDEAS)[number];
-        btn.appendChild(document.createTextNode(idea.chip));
-        btn.addEventListener("click", () => {
-          cancelInFlight();
-          textarea.value = idea.text;
-          activeSampleId = idea.id;
-          sampleNote.hidden = true;
-          updateCount();
-          setStatus("");
-          progressLog.replaceChildren();
-          clearResults();
-        });
+        btn.appendChild(
+          document.createTextNode((item as (typeof STORY_IDEAS)[number]).chip),
+        );
       }
       frag.appendChild(btn);
     }
@@ -120,41 +118,78 @@ export function initInput(): void {
           : `Show ${all.length - SAMPLES_SHOWN} more`,
       ) as HTMLButtonElement;
       toggle.type = "button";
-      toggle.addEventListener("click", () => {
-        samplesExpanded = !samplesExpanded;
-        renderSamples();
-      });
+      toggle.dataset.toggleMore = "1";
       frag.appendChild(toggle);
     }
     sampleRow.replaceChildren(frag);
   }
 
-  function loadDraftSample(id: string): void {
-    const sample = SAMPLE_DRAFTS.find((s) => s.id === id);
-    if (!sample) return;
+  /* One delegated listener survives every re-render of the row. */
+  sampleRow.addEventListener("click", (e) => {
+    const target = (e.target as HTMLElement).closest("button");
+    if (!target || !sampleRow.contains(target)) return;
+    if (target.dataset.toggleMore) {
+      samplesExpanded = !samplesExpanded;
+      renderSamples();
+      return;
+    }
+    const id = target.dataset.sampleId;
+    if (id) loadSample(id);
+  });
+
+  function loadSample(id: string): void {
+    const draft = SAMPLE_DRAFTS.find((s) => s.id === id);
+    const idea = draft ? undefined : STORY_IDEAS.find((s) => s.id === id);
+    if (!draft && !idea) return;
     cancelInFlight();
-    textarea.value = sample.text;
-    activeSampleId = sample.id;
+    textarea.value = draft ? draft.text : idea?.text ?? "";
+    activeSampleId = id;
     progressLog.replaceChildren();
     updateCount();
-
-    sampleNote.hidden = false;
-    sampleNote.replaceChildren();
-    sampleNote.appendChild(
-      document.createTextNode(
-        "Written for this demo, drawing on facts reported in ",
-      ),
-    );
-    const a = document.createElement("a");
-    a.href = sample.basedOnUrl;
-    a.textContent = sample.basedOnLabel;
-    a.target = "_blank";
-    a.rel = "noopener noreferrer";
-    sampleNote.appendChild(a);
-    sampleNote.appendChild(document.createTextNode("."));
-
     setStatus("");
-    clearResults();
+
+    sampleNote.hidden = !draft;
+    if (draft) {
+      sampleNote.replaceChildren();
+      sampleNote.appendChild(
+        document.createTextNode(
+          "Written for this demo, drawing on facts reported in ",
+        ),
+      );
+      const a = document.createElement("a");
+      a.href = draft.basedOnUrl;
+      a.textContent = draft.basedOnLabel;
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+      sampleNote.appendChild(a);
+      sampleNote.appendChild(document.createTextNode("."));
+    }
+
+    // Replay by default, live on demand: a committed recorded run renders
+    // instantly, labeled; the live action is one visible click away.
+    const recorded = RECORDED_RESULTS.find((r) => r.sampleId === id);
+    if (recorded) {
+      renderRecorded(recorded);
+    } else {
+      clearResults();
+    }
+  }
+
+  /* Replay re-runs the committed fixture through the same grounding gate
+   * the server applies — the honesty claim is enforced in the browser. */
+  function renderRecorded(recorded: RecordedResult): void {
+    const { kept, droppedCount } = applyGroundingGate(
+      recorded.suggestions,
+      new Set(recorded.searchUrlsNormalized),
+    );
+    renderResults(kept, {
+      provenance:
+        `Recorded ${recorded.model} run, captured ${recorded.capturedOn} — replayed with no API call and re-checked against the grounding gate in your browser.`,
+      droppedCount: recorded.droppedCount + droppedCount,
+      searchesRun: recorded.searchesRun,
+      ms: recorded.ms,
+      onRunLive: () => void findSources(),
+    });
   }
 
   function setMode(next: Mode): void {
@@ -233,6 +268,50 @@ export function initInput(): void {
       lineEl.textContent = `${lineEl.textContent} — ${p.resultCount ?? 0} results`;
     }
     progressLog.scrollTop = progressLog.scrollHeight;
+  }
+
+  /* A live run can legitimately drop everything: the model proposed only
+   * suggestions it could not ground, and the gate refused all of them.
+   * That is the design working — say so plainly, and offer ways forward
+   * rather than a dead end. */
+  function renderAllDropped(data: DoneLine): void {
+    const root = byId("results");
+    const box = el("div", "all-dropped");
+    box.appendChild(
+      el(
+        "p",
+        "who",
+        `The grounding gate dropped all ${data.dropped_count} suggestions from this run.`,
+      ),
+    );
+    box.appendChild(
+      el(
+        "p",
+        "why",
+        "None of them carried a URL from a search the model actually ran, so none were shown. That is the contract working: a suggestion without real grounding never reaches you.",
+      ),
+    );
+    const actions = el("p", "ground");
+    const retry = el("button", "linklike", "Run it again") as HTMLButtonElement;
+    retry.type = "button";
+    retry.addEventListener("click", () => void findSources());
+    actions.appendChild(retry);
+    const recorded = activeSampleId
+      ? RECORDED_RESULTS.find((r) => r.sampleId === activeSampleId)
+      : RECORDED_RESULTS[0];
+    if (recorded) {
+      actions.appendChild(document.createTextNode("  ·  "));
+      const replay = el(
+        "button",
+        "linklike",
+        `See a recorded ${recorded.model} run instead`,
+      ) as HTMLButtonElement;
+      replay.type = "button";
+      replay.addEventListener("click", () => renderRecorded(recorded));
+      actions.appendChild(replay);
+    }
+    box.appendChild(actions);
+    root.replaceChildren(box);
   }
 
   async function findSources(): Promise<void> {
@@ -324,13 +403,17 @@ export function initInput(): void {
           const data = parsed as unknown as DoneLine;
           setStatus("");
           progressLog.replaceChildren();
-          renderResults(data.suggestions, {
-            provenance:
-              `Found LIVE by ${data.model} just now${activeSampleId ? " for the loaded sample" : ""} — grounded against the web searches it ran for this request.`,
-            droppedCount: data.dropped_count,
-            searchesRun: data.searches_run,
-            ms: data.ms,
-          });
+          if (data.suggestions.length === 0) {
+            renderAllDropped(data);
+          } else {
+            renderResults(data.suggestions, {
+              provenance:
+                `Found LIVE by ${data.model} just now${activeSampleId ? " for the loaded sample" : ""} — grounded against the web searches it ran for this request.`,
+              droppedCount: data.dropped_count,
+              searchesRun: data.searches_run,
+              ms: data.ms,
+            });
+          }
         } else if (parsed.t === "error") {
           finished = true;
           progressLog.replaceChildren();

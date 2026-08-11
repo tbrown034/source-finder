@@ -468,6 +468,17 @@ textarea::placeholder { color: var(--ink-3); font-style: italic; }
 
 .lead-item .ground a { color: var(--accent); }
 
+.all-dropped {
+  border-left: 3px solid var(--stamp);
+  background: var(--stamp-soft);
+  padding: 12px 16px;
+  margin: 14px 0;
+  font-family: var(--serif);
+}
+
+.all-dropped .who { font-weight: 600; margin: 0 0 4px; }
+.all-dropped .why { font-size: 14px; color: var(--ink-2); margin: 0 0 8px; }
+
 .none-note {
   font-family: var(--serif);
   font-style: italic;

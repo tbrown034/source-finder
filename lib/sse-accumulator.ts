@@ -116,6 +116,12 @@ export class StreamAccumulator {
     }
   }
 
+  /* Searches narrated so far — the number the page's wire showed. The
+   * done line reports THIS count so the two can never disagree. */
+  get searchesRun(): number {
+    return this.searchCount;
+  }
+
   /* The reassembled content array, in block order. */
   content(): unknown[] {
     const out: unknown[] = [];

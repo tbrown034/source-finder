@@ -220,7 +220,8 @@ export default async function handler(
     mode: isIdea ? "idea" : "draft",
     suggestions: kept,
     dropped_count: droppedCount,
-    searches_run: acc.usage.server_tool_use?.web_search_requests ?? null,
+    // The count the wire narrated — never a second, disagreeing number.
+    searches_run: acc.searchesRun,
     usage: {
       input_tokens: acc.usage.input_tokens ?? null,
       output_tokens: acc.usage.output_tokens ?? null,
