@@ -81,11 +81,22 @@ export function initInput(): void {
         btn.addEventListener("click", () => {
           cancelInFlight();
           textarea.value = idea.text;
-          activeSampleId = null;
+          activeSampleId = idea.id;
           sampleNote.hidden = true;
           updateCount();
-          clearResults();
           setStatus("");
+          const recorded = RECORDED_RESULTS.find((r) => r.sampleId === idea.id);
+          if (recorded) {
+            renderResults(recorded.suggestions, {
+              provenance:
+                `Recorded ${recorded.model} run (captured ${recorded.capturedOn}), replayed verbatim — no API call was made. Not convinced? "Find missed sources" runs it live.`,
+              droppedCount: recorded.droppedCount,
+              searchesRun: recorded.searchesRun,
+              ms: recorded.ms,
+            });
+          } else {
+            clearResults();
+          }
         });
         frag.appendChild(btn);
       }

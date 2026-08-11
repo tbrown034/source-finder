@@ -7,7 +7,7 @@ import { describe, expect, it } from "vitest";
 import { RECORDED_RESULTS } from "./recorded-result.js";
 import { applyGroundingGate } from "./grounding.js";
 import { CATEGORY_IDS } from "./categories.js";
-import { SAMPLE_DRAFTS } from "./samples.js";
+import { SAMPLE_DRAFTS, STORY_IDEAS } from "./samples.js";
 
 describe("recorded fixtures — replayed data still passes the live gate", () => {
   it("at least one fixture is committed", () => {
@@ -16,8 +16,10 @@ describe("recorded fixtures — replayed data still passes the live gate", () =>
 
   for (const fixture of RECORDED_RESULTS) {
     describe(`fixture ${fixture.sampleId}`, () => {
-      it("belongs to a shipped sample draft", () => {
-        expect(SAMPLE_DRAFTS.map((s) => s.id)).toContain(fixture.sampleId);
+      it("belongs to a shipped sample draft or story idea", () => {
+        expect(
+          [...SAMPLE_DRAFTS, ...STORY_IDEAS].map((s) => s.id),
+        ).toContain(fixture.sampleId);
       });
 
       it("every recorded suggestion passes the grounding gate", () => {

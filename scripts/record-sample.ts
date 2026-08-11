@@ -21,16 +21,21 @@ import {
   applyGroundingGate,
   collectSearchUrls,
 } from "../lib/grounding.js";
-import { SAMPLE_DRAFTS } from "../lib/samples.js";
+import { SAMPLE_DRAFTS, STORY_IDEAS } from "../lib/samples.js";
 
 const sampleId = process.argv[2];
-const sample = SAMPLE_DRAFTS.find((s) => s.id === sampleId);
+const draft = SAMPLE_DRAFTS.find((s) => s.id === sampleId);
+const idea = draft ? undefined : STORY_IDEAS.find((s) => s.id === sampleId);
+const sample = draft ?? idea;
 if (!sample) {
   console.error(
-    `Unknown sample id "${sampleId}". Known: ${SAMPLE_DRAFTS.map((s) => s.id).join(", ")}`,
+    `Unknown sample id "${sampleId}". Known: ${
+      [...SAMPLE_DRAFTS, ...STORY_IDEAS].map((s) => s.id).join(", ")
+    }`,
   );
   process.exit(1);
 }
+const isIdea = idea !== undefined;
 const apiKey = process.env.ANTHROPIC_API_KEY;
 if (!apiKey) {
   console.error("ANTHROPIC_API_KEY is not set");
@@ -52,7 +57,7 @@ const response = await fetch("https://api.anthropic.com/v1/messages", {
     tools: [
       { type: "web_search_20250305", name: "web_search", max_uses: MAX_SEARCHES },
     ],
-    messages: [{ role: "user", content: buildUserContent(sample.text, false) }],
+    messages: [{ role: "user", content: buildUserContent(sample.text, isIdea) }],
   }),
 });
 
@@ -80,7 +85,7 @@ const { kept, droppedCount } = applyGroundingGate(suggestions, searchUrls);
 
 const fixture = {
   sampleId: sample.id,
-  mode: "draft",
+  mode: isIdea ? "idea" : "draft",
   suggestions: kept,
   droppedCount,
   searchesRun: payload.usage?.server_tool_use?.web_search_requests ?? null,
