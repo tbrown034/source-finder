@@ -293,7 +293,7 @@ export function initInput(): void {
     const line = el(
       "p",
       "status-line",
-      "Working — the model is reading your text and searching the web. Each search appears below as it runs; expect one to two minutes. ",
+      "Working — the model is reading your text and searching the web. Each search appears below as it runs; usually under half a minute. ",
     );
     const secondsEl = el("span", undefined, "");
     secondsEl.setAttribute("aria-hidden", "true");
