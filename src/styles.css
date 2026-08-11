@@ -243,7 +243,8 @@ body {
 }
 
 .mode-toggle {
-  display: inline-flex;
+  display: flex;
+  width: 100%;
   border: 1px solid var(--line);
   border-radius: 3px;
   overflow: hidden;
@@ -254,14 +255,15 @@ body {
   border: 0;
   background: var(--surface);
   color: var(--ink-2);
-  font: 600 17px/1.2 var(--sans);
+  font: 600 21px/1.2 var(--sans);
   letter-spacing: 0.02em;
+  flex: 1;
   display: inline-flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 4px;
+  gap: 5px;
   text-align: left;
-  padding: 13px 20px;
+  padding: 16px 22px;
   cursor: pointer;
 }
 
@@ -270,7 +272,7 @@ body {
 .mode-name { font-weight: 700; }
 
 .mode-sub {
-  font: italic 400 14.5px var(--serif);
+  font: italic 400 16px var(--serif);
   opacity: 0.85;
 }
 
