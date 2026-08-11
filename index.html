@@ -97,58 +97,30 @@
     <details class="disclosure" open>
       <summary>How this demo works</summary>
       <div class="disclosure-body">
-        <p><strong>What the AI does.</strong> A live request first uses
-        Anthropic's <a href="https://www.anthropic.com/news/claude-sonnet-5"
-        target="_blank" rel="noopener noreferrer">Claude Sonnet 5</a>. If it cannot complete a usable grounded
-        run, the server makes one backup attempt with OpenAI's <a
-        href="https://openai.com/index/gpt-5-6/" target="_blank"
-        rel="noopener noreferrer">GPT-5.6 Terra</a>. The active model
-        reads your text, searches the web and proposes sources across four
-        blindspot categories. Server-side code then drops every suggestion
-        that is not backed by an actual search result URL — if the model
-        cannot ground a suggestion in a search it ran, you never see it.
-        The page tells you how many were dropped. An example chip only loads
-        text into the box; the green button runs it live. If a live example
-        fails, the page can show a labeled saved result that is re-checked
-        through the same gate in your browser.</p>
-        <p><strong>What gets sent.</strong> Live text is sent to Anthropic
-        first. If that attempt cannot finish with usable grounded results, the
-        same text is also sent to OpenAI for the backup attempt. Search queries go out to the web.
-        Nothing is stored by this site; there is no database, and page-view
-        analytics never receive the text anyone types. Because the text leaves
-        your machine, never paste confidential material: unpublished source
-        identities, off-the-record information, sealed records, or anything
-        a source shared in confidence.</p>
-        <p><strong>What it never does.</strong> It does not judge whether
-        your story is good. It does not contact anyone. It does not replace
-        your editor: every suggestion is a lead to verify with your own
-        reporting before you rely on it. Claude is instructed to suggest
-        organizations, officials, public records and expert roles—not private
-        individuals.</p>
-        <p><strong>How this fits newsroom AI standards.</strong> Hearst's
-        published <a href="https://www.houstonchronicle.com/ai_use/"
-        rel="noopener" target="_blank">AI-use principles</a> permit
-        generative AI to support reporting and
-        research by organizing and surfacing material
-        "which is then evaluated by reporters and editors," under editorial
-        oversight and with clear disclosure. This tool is built to live
-        inside that box: AI is not a journalist here — it surfaces leads,
-        the page labels everything the model touched, and a journalist
-        evaluates every item before it goes anywhere near a story.</p>
-        <p><strong>Who this is for.</strong> This is an internal newsroom
-        tool for reporters and editors — not a public product, and nothing
-        it produces is for publication. Every result is unverified
-        information until a journalist confirms it through their own
-        reporting.</p>
-        <p><strong>Where the examples come from.</strong> Each sample draft
-        was written for this demo by Claude, the same AI that powers the
-        tool, working from a real, linked Houston Chronicle article: the
-        article was read, its facts were kept, and new prose was written
-        from scratch. No Chronicle sentences are reproduced, and every
-        sample credits and links the original story it draws on. The
-        story-idea examples are assignments written for this demo about
-        real, publicly reported Houston matters.</p>
+        <p><strong>What the AI does.</strong> A live run sends your text
+        to Anthropic's <a href="https://www.anthropic.com/news/claude-sonnet-5"
+        target="_blank" rel="noopener noreferrer">Claude Sonnet 5</a>,
+        which reads it, searches the web and proposes sources across four
+        blindspot categories. Plain, tested server code deletes any
+        suggestion not backed by a search result the model actually
+        received — the page tells you how many were dropped.</p>
+        <p><strong>What gets sent.</strong> Your text goes to the AI
+        provider, and search queries go out to the web. Nothing is stored
+        — no database, and analytics never see what anyone types. Don't
+        paste confidential material.</p>
+        <p><strong>What it never does.</strong> It doesn't judge your
+        story, contact anyone, or replace your editor. Every suggestion is
+        a lead to verify with your own reporting, and the model is
+        instructed to suggest organizations, officials, records and expert
+        roles — never private individuals.</p>
+        <p><strong>Built for newsroom standards.</strong> Designed to fit
+        Hearst's published <a href="https://www.houstonchronicle.com/ai_use/"
+        rel="noopener" target="_blank">AI-use principles</a>: AI surfaces
+        and labels leads; a journalist evaluates everything before it goes
+        anywhere near a story.</p>
       </div>
+      <p class="method-link"><a href="/methodology.html">Read the full
+      methodology &rarr;</a></p>
     </details>
 
     <footer class="colophon">
