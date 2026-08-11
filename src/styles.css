@@ -131,9 +131,9 @@ body {
 .kicker {
   font-family: var(--serif);
   font-style: italic;
-  font-size: clamp(20px, 3vw, 26px);
+  font-size: clamp(24px, 3.8vw, 33px);
   color: var(--accent);
-  margin: 0 0 8px;
+  margin: 0 0 10px;
 }
 
 .headline {
