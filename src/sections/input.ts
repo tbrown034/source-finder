@@ -21,6 +21,7 @@ export function initInput(): void {
   const textarea = byId<HTMLTextAreaElement>("storyText");
   const charCount = byId<HTMLSpanElement>("charCount");
   const findBtn = byId<HTMLButtonElement>("findBtn");
+  const clearBtn = byId<HTMLButtonElement>("clearBtn");
   const sampleRow = byId<HTMLDivElement>("sampleRow");
   const sampleNote = byId<HTMLParagraphElement>("sampleNote");
   const status = byId<HTMLDivElement>("status");
@@ -417,6 +418,7 @@ export function initInput(): void {
     updateCount();
   });
   findBtn.addEventListener("click", () => void findSources());
+  clearBtn.addEventListener("click", startOver);
 
   updateCount();
   renderSamples();
