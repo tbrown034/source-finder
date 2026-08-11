@@ -45,6 +45,9 @@ export function normalizeUrl(raw: string): string | null {
     return null;
   }
   if (url.protocol !== "http:" && url.protocol !== "https:") return null;
+  // URLs carrying credentials never pass: search results don't contain
+  // them, and a user:pass@host URL in an href is a spoofing primitive.
+  if (url.username !== "" || url.password !== "") return null;
   const path = url.pathname.length > 1 && url.pathname.endsWith("/")
     ? url.pathname.slice(0, -1)
     : url.pathname;

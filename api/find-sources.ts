@@ -137,6 +137,10 @@ export default async function handler(
     res.status(502).json({ error: "model returned an unreadable response" });
     return;
   }
+  if (typeof payload !== "object" || payload === null) {
+    res.status(502).json({ error: "model returned an unreadable response" });
+    return;
+  }
 
   const content = payload.content;
   const searchUrls = collectSearchUrls(content);

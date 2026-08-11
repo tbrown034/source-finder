@@ -63,6 +63,11 @@ describe("normalizeUrl — conservative URL identity", () => {
     expect(normalizeUrl("ftp://example.gov/data")).toBeNull();
   });
 
+  it("rejects URLs carrying credentials (user:pass@host spoofing)", () => {
+    expect(normalizeUrl("https://user:pass@example.gov/data")).toBeNull();
+    expect(normalizeUrl("https://evil.com%40@example.gov/data")).toBeNull();
+  });
+
   it("rejects unparseable strings", () => {
     expect(normalizeUrl("not a url")).toBeNull();
     expect(normalizeUrl("")).toBeNull();

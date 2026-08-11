@@ -29,6 +29,16 @@ export function initInput(): void {
   let running = false;
   let runSeq = 0;
 
+  /* Any change to the input invalidates an in-flight request: its
+   * response would describe text the user is no longer looking at.
+   * Bumping runSeq makes the stale response's handlers no-ops; state
+   * is reset here so the button never stays stuck disabled. */
+  function cancelInFlight(): void {
+    runSeq++;
+    running = false;
+    findBtn.disabled = false;
+  }
+
   function updateCount(): void {
     const n = textarea.value.length;
     charCount.textContent = `${n.toLocaleString()} / ${MAX_CHARS.toLocaleString()}`;
@@ -69,6 +79,7 @@ export function initInput(): void {
         const btn = el("button", "sample-btn", idea.text) as HTMLButtonElement;
         btn.type = "button";
         btn.addEventListener("click", () => {
+          cancelInFlight();
           textarea.value = idea.text;
           activeSampleId = null;
           sampleNote.hidden = true;
@@ -85,6 +96,7 @@ export function initInput(): void {
   function loadDraftSample(id: string): void {
     const sample = SAMPLE_DRAFTS.find((s) => s.id === id);
     if (!sample) return;
+    cancelInFlight();
     textarea.value = sample.text;
     activeSampleId = sample.id;
     updateCount();
@@ -122,6 +134,7 @@ export function initInput(): void {
 
   function setMode(next: Mode): void {
     if (mode === next) return;
+    cancelInFlight();
     mode = next;
     modeDraftBtn.classList.toggle("is-active", mode === "draft");
     modeIdeaBtn.classList.toggle("is-active", mode === "idea");
@@ -156,6 +169,7 @@ export function initInput(): void {
       "Reading your text and running up to 8 real web searches. This usually takes 20–40 seconds.",
     );
     const tick = window.setInterval(() => {
+      if (seq !== runSeq) return; // superseded — stop touching the status
       const s = Math.round((Date.now() - startedAt) / 1000);
       setStatus(
         `Reading your text and running up to 8 real web searches. This usually takes 20–40 seconds. (${s}s)`,
@@ -218,6 +232,10 @@ export function initInput(): void {
   modeDraftBtn.addEventListener("click", () => setMode("draft"));
   modeIdeaBtn.addEventListener("click", () => setMode("idea"));
   textarea.addEventListener("input", () => {
+    if (running) {
+      cancelInFlight();
+      setStatus("");
+    }
     activeSampleId = null;
     sampleNote.hidden = true;
     updateCount();
