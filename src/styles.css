@@ -24,6 +24,7 @@
 }
 
 :root {
+  color-scheme: light dark;
   --ground: #F7F4EC;
   --surface: #FDFBF4;
   --ink: #1F241F;
@@ -68,6 +69,7 @@ body {
   background: var(--ground);
   color: var(--ink);
   font: 16px/1.6 var(--sans);
+  -webkit-tap-highlight-color: transparent;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -212,6 +214,15 @@ body {
 
 @media (max-width: 640px) {
   .steps { flex-direction: column; gap: 14px; }
+}
+
+/* Touch devices get 44px-class hit targets (WCAG 2.2 / platform HIG)
+ * without loosening the desktop density. */
+@media (pointer: coarse) {
+  .sample-btn { padding: 11px 16px; }
+  .mode-btn { padding: 13px 18px; }
+  .clear-btn, .find-btn { padding: 14px 22px; }
+  button, summary, a { touch-action: manipulation; }
 }
 
 /* --- the desk (input) --- */
