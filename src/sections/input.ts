@@ -4,11 +4,11 @@
  * explicit click. Every failure path ends by pointing back at the
  * recorded sample, which never depends on the API. */
 
-import { SAMPLE_DRAFTS, STORY_IDEAS } from "../../lib/samples";
-import { RECORDED_RESULTS } from "../../lib/recorded-result";
-import type { Suggestion } from "../../lib/grounding";
-import { byId, el } from "../format";
-import { clearResults, renderResults } from "./results";
+import { SAMPLE_DRAFTS, STORY_IDEAS } from "../../lib/samples.ts";
+import { RECORDED_RESULTS } from "../../lib/recorded-result.ts";
+import type { Suggestion } from "../../lib/grounding.ts";
+import { byId, el } from "../format.ts";
+import { clearResults, renderResults } from "./results.ts";
 
 type Mode = "draft" | "idea";
 

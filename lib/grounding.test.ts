@@ -4,7 +4,7 @@ import {
   collectSearchUrls,
   isWellFormed,
   normalizeUrl,
-} from "./grounding";
+} from "./grounding.ts";
 
 const good = (overrides: Partial<Record<string, unknown>> = {}) => ({
   category: "data",

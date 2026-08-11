@@ -11,7 +11,7 @@
  * Pure functions, no I/O — unit-tested in grounding.test.ts and re-run
  * in the browser over the committed sample fixture. */
 
-import { isKnownCategory } from "./categories";
+import { isKnownCategory } from "./categories.ts";
 
 export interface Suggestion {
   category: string;
