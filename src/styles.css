@@ -91,6 +91,14 @@ body {
   letter-spacing: 0.01em;
 }
 
+.appbar-link {
+  margin-left: auto;
+  color: #F7F4EC;
+  font: 700 13.5px var(--sans);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 .appbar-note {
   font-size: 14px;
   color: color-mix(in srgb, #F7F4EC 72%, transparent);
