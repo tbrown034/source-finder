@@ -166,13 +166,13 @@ export function initInput(): void {
 
     const startedAt = Date.now();
     setStatus(
-      "Reading your text and running up to 8 real web searches. This usually takes 20–40 seconds.",
+      "Reading your text and running up to 8 real web searches. This usually takes one to two minutes.",
     );
     const tick = window.setInterval(() => {
       if (seq !== runSeq) return; // superseded — stop touching the status
       const s = Math.round((Date.now() - startedAt) / 1000);
       setStatus(
-        `Reading your text and running up to 8 real web searches. This usually takes 20–40 seconds. (${s}s)`,
+        `Reading your text and running up to 8 real web searches. This usually takes one to two minutes. (${s}s)`,
       );
     }, 1000);
 

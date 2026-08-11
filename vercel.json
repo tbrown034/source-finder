@@ -2,7 +2,7 @@
   "buildCommand": "pnpm build",
   "cleanUrls": true,
   "functions": {
-    "api/find-sources.ts": { "maxDuration": 60 }
+    "api/find-sources.ts": { "maxDuration": 180 }
   },
   "headers": [
     {

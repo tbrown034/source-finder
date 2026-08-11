@@ -25,7 +25,9 @@ import {
 } from "../lib/prompt.js";
 
 const MAX_INPUT_CHARS = 8000;
-const TIMEOUT_MS = 52_000;
+// Live runs with 6-8 searches take 60-90s; the function's maxDuration is
+// 180s in vercel.json, so the model gets 150s before we abort.
+const TIMEOUT_MS = 150_000;
 
 const limiter = createRateLimiter({
   perIpLimit: 3,
