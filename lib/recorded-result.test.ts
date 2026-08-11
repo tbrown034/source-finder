@@ -10,8 +10,12 @@ import { CATEGORY_IDS } from "./categories.js";
 import { SAMPLE_DRAFTS, STORY_IDEAS } from "./samples.js";
 
 describe("recorded fixtures — replayed data still passes the live gate", () => {
-  it("at least one fixture is committed", () => {
-    expect(RECORDED_RESULTS.length).toBeGreaterThan(0);
+  it("ships exactly four drafts, four ideas, and one fixture for each", () => {
+    expect(SAMPLE_DRAFTS).toHaveLength(4);
+    expect(STORY_IDEAS).toHaveLength(4);
+    expect(RECORDED_RESULTS.map((fixture) => fixture.sampleId).sort()).toEqual(
+      [...SAMPLE_DRAFTS, ...STORY_IDEAS].map((sample) => sample.id).sort(),
+    );
   });
 
   for (const fixture of RECORDED_RESULTS) {

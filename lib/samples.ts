@@ -21,11 +21,8 @@ export interface SampleDraft {
   text: string;
 }
 
-/* Order is deliberate: the default four (before "Show more") lead with the
- * hyper-local service story whose missing sources are the most obviously
- * findable, then the language-access policy story, then sports to prove
- * range early, then the suburban money story. The tail is ordered by
- * demo risk; the police-records story sits last on purpose. */
+/* Four examples only: a focused mix of hyper-local accountability, sports,
+ * language access, and education funding. */
 export const SAMPLE_DRAFTS: readonly SampleDraft[] = [
   {
     id: "faded-roads",
@@ -115,107 +112,6 @@ An efficiency audit required before the election found Cy-Fair receives about $1
 
 District officials estimate the increase would cost the owner of a median-value $322,000 home about $160 a year. Killian has sent letters to the state education commissioner for three straight years asking the state to cover part of the gap. He says he has never received a response.`,
   },
-  {
-    id: "lottery-commissions",
-    chip: "Lottery retailers kept $1.3M",
-    kind: "investigative",
-    title: "Retailers in $95M lottery sweep kept commissions despite rule findings",
-    basedOnUrl:
-      "https://www.houstonchronicle.com/news/investigations/article/lottery-retailers-broken-rules-commissions-22362263.php",
-    basedOnLabel: "Houston Chronicle: Texas Lottery retailers kept $1M in commissions after rule violations",
-    text:
-      `Texas lottery regulators concluded that the retailers who helped a gambling syndicate corner a $95 million jackpot broke state rules. Three years on, there is no indication the state has tried to recover the roughly $1.3 million in commissions and bonuses those retailers collected on the sale.
-
-The April 2023 Lotto Texas drawing was effectively bought out by Rook TX, an entity backed by a group of international gamblers, which purchased virtually all 25.8 million number combinations and claimed a $57.8 million lump-sum payout. Four licensed retailers, in Colleyville, Waco, Spicewood and Round Rock, processed more than 25 million of the roughly 28 million tickets sold for the drawing.
-
-They did it using pre-programmed QR codes scanned from personal devices, a workaround to lottery rules that let players buy only from a paper play slip or the official app, one set of numbers at a time. State inspectors who reviewed the sale in 2023 found no violations. After the QR-code method was reported publicly, regulators re-inspected and concluded late last year that the practice had never been approved.
-
-Records at the State Office of Administrative Hearings show the agency sent "show compliance" letters to two of the four retailers. Both surrendered their lottery licenses rather than contest the allegations.
-
-Retailers earn about 5% on ticket sales, plus a $25,000 bonus for selling a jackpot winner. The Colleyville store processed roughly 11 million of the tickets, worth close to $600,000 in commission. The Round Rock store's share came to about $400,000, the Spicewood store's to about $280,000.
-
-Gary Grief, who ran the lottery when the drawing was sold, faces a felony charge in Travis County accusing him of misusing his position to facilitate it. A hearing is set for this month. Lottery officials declined to comment, citing the ongoing litigation.`,
-  },
-  {
-    id: "bms-plant",
-    chip: "BMS $2.3B Houston plant",
-    kind: "business",
-    title: "Bristol Myers Squibb picks Houston for $2.3B manufacturing plant",
-    basedOnUrl:
-      "https://www.houstonchronicle.com/business/article/bristol-myers-squibbs-houston-biotech-22381760.php",
-    basedOnLabel: "Houston Chronicle: Bristol Myers Squibb plans $2.3B manufacturing plant in Houston",
-    text:
-      `Bristol Myers Squibb will build a $2.3 billion advanced manufacturing plant in Houston's Generation Park, the company announced Monday, the second multibillion-dollar pharmaceutical investment to land in the northeast Houston development in under a year.
-
-The 600,000-square-foot facility is expected to employ 500 people once it opens and to support about 2,000 construction jobs while it is built. Work is scheduled to begin next year and to finish by 2030. The New Jersey-based drugmaker said the site is designed to grow "in scale, capability and workforce for decades," language that suggests the opening footprint is a floor rather than a ceiling.
-
-The announcement comes eleven months after Eli Lilly said it would build a $6.5 billion plant in the same development, a project billed at the time as the largest biotech manufacturing investment in Texas history and one that carried 4,000 jobs with it. The two commitments put roughly $8.8 billion of pharmaceutical construction inside a single master-planned development in northeast Houston.
-
-Craig Rhodes, senior vice president of economic development at the Greater Houston Partnership, said the region had now landed "two Fortune 100 companies" in "back-to-back years." The partnership helped recruit the plant and hosted company executives on site visits in January and May.
-
-Regional leaders have spent years pitching Houston as a biomanufacturing hub that could sit alongside the Texas Medical Center and give the region a for-profit life sciences sector to match its hospitals. They have pointed to workforce training programs at San Jacinto College, Lone Star College and Texas A&M University as evidence that the region can staff the plants it is courting, and to the Lilly announcement as evidence that one large employer can attract another.`,
-  },
-  {
-    id: "constable-raises",
-    chip: "Constables' $305K raises",
-    kind: "county government",
-    title: "Harris County constables' pay climbs to $305,000",
-    basedOnUrl:
-      "https://www.houstonchronicle.com/politics/houston/article/harris-county-constable-raise-2026-22371661.php",
-    basedOnLabel: "Houston Chronicle: Harris County constables to earn $305,000 after latest pay raises",
-    text:
-      `Harris County's eight elected constables are set to earn $305,000 a year after Commissioners Court voted 4-1 Thursday to approve their fourth raise in three years — a run that has more than doubled their pay and now puts them above the vice president of the United States.
-
-County Judge Lina Hidalgo cast the lone final vote against the increase, calling it "an unbelievable number" for politically influential elected officials. Commissioner Rodney Ellis initially opposed the raises but changed his vote after the court agreed to consider matching increases for other elected officials, including the district and county attorneys.
-
-The raises come despite wide differences in the size of the offices. Half of the constable precincts employ fewer than 200 people; the largest, Precinct 4, employed about 750 as of the last fiscal year. The sheriff's office, by comparison, manages more than 5,000 employees. None of the eight constables attended Thursday's meeting.
-
-Commissioner Adrian Garcia said the raises were motivated in part by legislation from state Rep. Sam Harless, R-Spring, requiring pay increases at any Harris County law enforcement agency to be distributed equally across the others. County Attorney Abbie Kamin told the court the raises were not necessarily required under state law but were "recommended and agreed to."
-
-The increases take effect only if they survive the county's budget approval process in September.`,
-  },
-  {
-    id: "tropics-watch",
-    chip: "Tropics: 3 systems, none Gulf",
-    kind: "weather",
-    title: "Three Atlantic systems bear watching; Texas coast quiet for now",
-    basedOnUrl:
-      "https://www.houstonchronicle.com/news/houston-weather/hurricanes/article/tropical-disturbances-atlantic-ocean-west-africa-22381595.php",
-    basedOnLabel: "Houston Chronicle: 3 tropical systems emerge in Atlantic, Texas Gulf Coast quiet for now",
-    text:
-      `The National Hurricane Center is watching three areas of possible tropical development in the Atlantic, none of which appears likely to reach the Gulf of Mexico in the near term, according to the center's Monday morning outlook.
-
-The most organized of the three is an area of low pressure a few hundred miles south of the Cabo Verde Islands. Forecasters put its odds of developing at 20% over the next two days and 60% over the next seven. They expect it to merge with a tropical wave coming off West Africa and to become a tropical depression later this week as it moves west to west-northwest across the central tropical Atlantic. If it reaches tropical storm strength, it would take the name Cristobal, the third of the season.
-
-A second system, a tropical wave roughly midway between West Africa and the Lesser Antilles, was given a 10% chance of developing. Forecasters expect upper-level winds along its path to turn less favorable later in the week as it nears the Caribbean. The third, a trough northwest of Bermuda, is expected to run out of time after Wednesday as it drifts over cooler water.
-
-The season so far has been comparatively quiet, which forecasters attribute to a strong El Nino and the wind shear it has driven across the tropical Atlantic. The season's first two named storms, Arthur in June and Bertha in July, both came ashore on the U.S. Gulf Coast but stayed weak.
-
-Nothing in Monday's outlook was aimed at the Texas coast. The percentages describe only the chance a system organizes, not where it would end up or how strong it would get. A live storm tracker accompanies this story.`,
-  },
-  {
-    id: "river-oaks-prank",
-    chip: "River Oaks prank, 2 charged",
-    kind: "breaking news",
-    title: "Felony charges filed after social media prank caused office shooter scare",
-    basedOnUrl:
-      "https://www.houstonchronicle.com/news/houston-texas/trending/article/active-shooter-river-oaks-social-media-prank-22382541.php",
-    basedOnLabel: "Houston Chronicle: Houston pranksters caused River Oaks shooter scare, court docs allege",
-    text:
-      `Two Houston men face felony charges after a prank staged for social media convinced workers in a River Oaks office tower that an active shooter was inside, according to Harris County court records filed Monday.
-
-Edward Gonzales, 35, and Anthony Aguirre Jr., 38, were each charged in connection with the scare last Wednesday at the office tower at 3730 Kirby Drive. Arrest warrants have been issued for both men.
-
-Court records allege Gonzales and a second man, who has not been charged, entered the building dressed as delivery workers, yelled "safety check" and banged on office doors. Aguirre told police he had been paid $200 to film them.
-
-One worker told police she heard a man threaten to shoot outside her door and feared for her life. She was on a video call at the time and asked the person on the other end to call 911, then texted her husband and her ex-husband to do the same. Another employee said three men pushed into his office, demanded he sign for a package he had not ordered, and drank from his and his client's drinks.
-
-Houston police responded with all available units and locked down the building, holding the people inside in a first-floor room while officers searched it. Aguirre was detained at the scene and told officers the group travels the country recording pranks meant to bait confrontation.
-
-Gonzales has two prior misdemeanor convictions over similar stunts: one in October for throwing cash into traffic on Dallas Street, which cost him three days in jail, and one in 2016 for blocking an Interstate 45 feeder road to play basketball.
-
-Court records list an attorney for Gonzales. None is listed for Aguirre.`,
-  },
 ] as const;
 
 export interface StoryIdea {
@@ -224,10 +120,8 @@ export interface StoryIdea {
   text: string;
 }
 
-/* Order is deliberate. Position 1 is the reliability decision: a
- * fixture-backed idea whose default click returns a known-good result.
- * Positions 2-4 are the live showcase, ordered by how reliably a search
- * grounds them. Five and six sit behind "Show more". */
+/* Four examples only: storm readiness, sports/health, a bilingual
+ * neighborhood project, and education accountability. */
 export const STORY_IDEAS: readonly StoryIdea[] = [
   {
     id: "storm-readiness",
@@ -248,15 +142,5 @@ export const STORY_IDEAS: readonly StoryIdea[] = [
     id: "hisd-takeover",
     chip: "HISD takeover, year three",
     text: "Three years into the state takeover of Houston ISD — with the TEA extension running to 2027 and a dozen campuses closing, what has changed for students and teachers.",
-  },
-  {
-    id: "ship-channel-air",
-    chip: "Ship Channel dredging spoils",
-    text: "Port Houston's Project 11 is placing millions of cubic yards of dredged sediment beside Galena Park and Pleasantville. What people living there are breathing.",
-  },
-  {
-    id: "metrolift",
-    chip: "METROLift riders left waiting",
-    text: "METROLift is the only ride many disabled and older Houstonians have, and it keeps missing pickup windows. Checking METRO's on-time numbers against what riders describe.",
   },
 ] as const;

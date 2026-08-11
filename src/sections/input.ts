@@ -1,9 +1,6 @@
-/* The input section: draft/idea mode toggle, clickable samples, character
- * counter, and the one fetch in the product. Loading a sample chip
- * replays its recorded run instantly (labeled: model, capture date, no
- * API call) with a visible "Run it live instead" action; typed or pasted
- * text always runs live. Labels never blur the two. Every failure path
- * offers a way to start over.
+/* The input section: draft/idea mode toggle, four focused examples in each
+ * mode, character counter, and the one fetch in the product. Every failure
+ * path offers a way to start over.
  *
  * Chip clicks are handled by ONE delegated listener on the row, so a
  * re-render can never orphan a per-button handler mid-click. */
@@ -19,8 +16,6 @@ type Mode = "draft" | "idea";
 
 const MAX_CHARS = 8000;
 const MIN_CHARS = 40;
-const SAMPLES_SHOWN = 4;
-
 export function initInput(): void {
   const textarea = byId<HTMLTextAreaElement>("storyText");
   const charCount = byId<HTMLSpanElement>("charCount");
@@ -38,7 +33,6 @@ export function initInput(): void {
   let activeSampleId: string | null = null;
   let running = false;
   let runSeq = 0;
-  let samplesExpanded = false;
 
   /* Any change to the input invalidates an in-flight request: its
    * response would describe text the user is no longer looking at.
@@ -88,9 +82,8 @@ export function initInput(): void {
   function renderSamples(): void {
     const frag = document.createDocumentFragment();
     const all = mode === "draft" ? SAMPLE_DRAFTS : STORY_IDEAS;
-    const shown = samplesExpanded ? all : all.slice(0, SAMPLES_SHOWN);
 
-    for (const item of shown) {
+    for (const item of all) {
       const btn = el("button", "sample-btn") as HTMLButtonElement;
       btn.type = "button";
       btn.dataset.sampleId = item.id;
@@ -109,18 +102,6 @@ export function initInput(): void {
       frag.appendChild(btn);
     }
 
-    if (all.length > SAMPLES_SHOWN) {
-      const toggle = el(
-        "button",
-        "linklike sample-more",
-        samplesExpanded
-          ? "Show fewer"
-          : `Show ${all.length - SAMPLES_SHOWN} more`,
-      ) as HTMLButtonElement;
-      toggle.type = "button";
-      toggle.dataset.toggleMore = "1";
-      frag.appendChild(toggle);
-    }
     sampleRow.replaceChildren(frag);
   }
 
@@ -128,11 +109,6 @@ export function initInput(): void {
   sampleRow.addEventListener("click", (e) => {
     const target = (e.target as HTMLElement).closest("button");
     if (!target || !sampleRow.contains(target)) return;
-    if (target.dataset.toggleMore) {
-      samplesExpanded = !samplesExpanded;
-      renderSamples();
-      return;
-    }
     const id = target.dataset.sampleId;
     if (id) loadSample(id);
   });
@@ -212,7 +188,6 @@ export function initInput(): void {
     if (mode === next) return;
     cancelInFlight();
     mode = next;
-    samplesExpanded = false;
     progressLog.replaceChildren();
     modeDraftBtn.classList.toggle("is-active", mode === "draft");
     modeIdeaBtn.classList.toggle("is-active", mode === "idea");
