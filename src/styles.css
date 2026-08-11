@@ -103,11 +103,19 @@ body {
 
 .brief { margin-bottom: 28px; }
 
+.kicker {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 15px;
+  color: var(--ink-3);
+  margin: 0 0 2px;
+}
+
 .headline {
   font-family: var(--serif);
   font-weight: 600;
-  font-size: clamp(26px, 4.6vw, 36px);
-  line-height: 1.18;
+  font-size: clamp(30px, 5.2vw, 42px);
+  line-height: 1.14;
   margin: 0 0 4px;
   text-wrap: balance;
 }
@@ -122,10 +130,10 @@ body {
 
 .deck {
   font-family: var(--serif);
-  font-size: 16px;
+  font-size: 18px;
   color: var(--ink-2);
   margin: 0;
-  max-width: 62ch;
+  max-width: 58ch;
 }
 
 /* --- the desk (input) --- */
