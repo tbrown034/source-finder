@@ -2,7 +2,7 @@
  * serverless function and the fixture-recording script, so the recorded
  * sample is produced by exactly the code path readers are shown. */
 
-import { CATEGORIES } from "./categories.ts";
+import { CATEGORIES } from "./categories.js";
 
 export const MODEL = "claude-sonnet-4-6";
 export const MAX_TOKENS = 6000;

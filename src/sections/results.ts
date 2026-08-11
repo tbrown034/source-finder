@@ -2,9 +2,9 @@
  * blindspot categories. Every render carries the verify-before-contacting
  * line and an honest dropped-count when suggestions were gated out. */
 
-import { CATEGORIES } from "../../lib/categories.ts";
-import type { Suggestion } from "../../lib/grounding.ts";
-import { byId, el } from "../format.ts";
+import { CATEGORIES } from "../../lib/categories.js";
+import type { Suggestion } from "../../lib/grounding.js";
+import { byId, el } from "../format.js";
 
 export interface RenderOptions {
   provenance: string; // the recorded-vs-live label, always shown

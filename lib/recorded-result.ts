@@ -8,7 +8,7 @@
  * (normalized by lib/grounding.normalizeUrl) so the fixture-integrity
  * test can re-run the gate over this exact data. */
 
-import type { Suggestion } from "./grounding.ts";
+import type { Suggestion } from "./grounding.js";
 
 export interface RecordedResult {
   sampleId: string;

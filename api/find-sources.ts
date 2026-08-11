@@ -11,18 +11,18 @@
  * the web. Nothing is stored here. */
 
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { clientIp, createRateLimiter, QUOTA_BODY } from "./_shared.ts";
+import { clientIp, createRateLimiter, QUOTA_BODY } from "./_shared.js";
 import {
   applyGroundingGate,
   collectSearchUrls,
-} from "../lib/grounding.ts";
+} from "../lib/grounding.js";
 import {
   buildUserContent,
   MAX_SEARCHES,
   MAX_TOKENS,
   MODEL,
   SYSTEM_PROMPT,
-} from "../lib/prompt.ts";
+} from "../lib/prompt.js";
 
 const MAX_INPUT_CHARS = 8000;
 const TIMEOUT_MS = 52_000;

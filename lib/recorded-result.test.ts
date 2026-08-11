@@ -4,10 +4,10 @@
  * silently ships suggestions the gate would no longer allow. */
 
 import { describe, expect, it } from "vitest";
-import { RECORDED_RESULTS } from "./recorded-result.ts";
-import { applyGroundingGate } from "./grounding.ts";
-import { CATEGORY_IDS } from "./categories.ts";
-import { SAMPLE_DRAFTS } from "./samples.ts";
+import { RECORDED_RESULTS } from "./recorded-result.js";
+import { applyGroundingGate } from "./grounding.js";
+import { CATEGORY_IDS } from "./categories.js";
+import { SAMPLE_DRAFTS } from "./samples.js";
 
 describe("recorded fixtures — replayed data still passes the live gate", () => {
   it("at least one fixture is committed", () => {

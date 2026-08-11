@@ -1,4 +1,4 @@
 import "./styles.css";
-import { initInput } from "./sections/input.ts";
+import { initInput } from "./sections/input.js";
 
 initInput();

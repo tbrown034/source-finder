@@ -3,9 +3,11 @@
  * function uses (lib/prompt.ts + lib/grounding.ts are imported directly;
  * Node's type stripping handles the .ts imports).
  *
- * Usage:
+ * Usage (bundled through esbuild so the .js-specifier TS imports resolve):
  *   set -a; source .env.local; set +a
- *   node scripts/record-sample.mjs <sampleId> > fixture-<sampleId>.json
+ *   node_modules/.bin/esbuild scripts/record-sample.ts --bundle --format=esm \
+ *     --platform=node --outfile=/tmp/record-sample.mjs \
+ *     && node /tmp/record-sample.mjs <sampleId> > fixture-<sampleId>.json
  */
 
 import {
@@ -14,12 +16,12 @@ import {
   MAX_TOKENS,
   MODEL,
   SYSTEM_PROMPT,
-} from "../lib/prompt.ts";
+} from "../lib/prompt.js";
 import {
   applyGroundingGate,
   collectSearchUrls,
-} from "../lib/grounding.ts";
-import { SAMPLE_DRAFTS } from "../lib/samples.ts";
+} from "../lib/grounding.js";
+import { SAMPLE_DRAFTS } from "../lib/samples.js";
 
 const sampleId = process.argv[2];
 const sample = SAMPLE_DRAFTS.find((s) => s.id === sampleId);
