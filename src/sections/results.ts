@@ -14,6 +14,20 @@ export interface RenderOptions {
   /* When set (recorded replays), renders a visible action that triggers
    * the real fetch — replay by default, live on demand. */
   onRunLive?: () => void;
+  /* Live runs: exact token counts from the API's usage block, shown with
+   * an approximate cost — transparency about what a run consumed. */
+  tokens?: { input: number | null; output: number | null };
+}
+
+/* claude-sonnet-4-6 list prices, for the approximate per-run cost line:
+ * $3/M input tokens, $15/M output tokens, $10 per 1,000 searches. */
+function approxCost(
+  input: number,
+  output: number,
+  searches: number | null,
+): string {
+  const usd = (input * 3) / 1e6 + (output * 15) / 1e6 + (searches ?? 0) * 0.01;
+  return `≈$${usd.toFixed(2)}`;
 }
 
 export function clearResults(): void {
@@ -46,16 +60,24 @@ export function renderResults(
       ? `${opts.droppedCount} suggestion${opts.droppedCount === 1 ? "" : "s"} dropped for lacking a grounding search result`
       : "every suggestion below is grounded in a search result",
   );
+  if (
+    opts.tokens && opts.tokens.input !== null && opts.tokens.output !== null
+  ) {
+    gateBits.push(
+      `${opts.tokens.input.toLocaleString()} tokens in / ${opts.tokens.output.toLocaleString()} out (${approxCost(opts.tokens.input, opts.tokens.output, opts.searchesRun)})`,
+    );
+  }
   if (opts.ms !== null) gateBits.push(`${(opts.ms / 1000).toFixed(1)}s`);
   frag.appendChild(el("p", "result-meta", gateBits.join(" · ")));
 
-  frag.appendChild(
-    el(
-      "p",
-      "verify-note",
-      "Verify before contacting — every item below is a lead surfaced by a web search, not a vetted source. Confirm who they are and what they know with your own reporting.",
+  const verify = el("p", "verify-note");
+  verify.appendChild(el("strong", "verify-lead", "Verify before contacting."));
+  verify.appendChild(
+    document.createTextNode(
+      " Every item below is a lead surfaced by a web search, not a vetted source. Confirm who they are and what they know with your own reporting.",
     ),
   );
+  frag.appendChild(verify);
 
   for (const category of CATEGORIES) {
     const block = el("section", "category-block");

@@ -218,6 +218,7 @@ export function initInput(): void {
     suggestions: Suggestion[];
     dropped_count: number;
     searches_run: number | null;
+    usage?: { input_tokens: number | null; output_tokens: number | null };
     model: string;
     ms: number;
   }
@@ -412,6 +413,10 @@ export function initInput(): void {
               droppedCount: data.dropped_count,
               searchesRun: data.searches_run,
               ms: data.ms,
+              tokens: {
+                input: data.usage?.input_tokens ?? null,
+                output: data.usage?.output_tokens ?? null,
+              },
             });
           }
         } else if (parsed.t === "error") {
