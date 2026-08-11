@@ -82,20 +82,33 @@ export function initInput(): void {
     textarea.focus();
   }
 
+  /* Two real headlines up front; the rest behind one tap. An editor
+   * skimming an unfamiliar site gets a simple choice, not a chip cloud. */
+  let samplesExpanded = false;
+
   function renderSamples(): void {
     const frag = document.createDocumentFragment();
     const all = mode === "draft" ? SAMPLE_DRAFTS : STORY_IDEAS;
+    const shown = samplesExpanded ? all : all.slice(0, 2);
 
-    for (const item of all) {
+    for (const item of shown) {
       const btn = el("button", "sample-btn") as HTMLButtonElement;
       btn.type = "button";
       btn.dataset.sampleId = item.id;
-      btn.title = mode === "draft"
+      const headline = mode === "draft"
         ? (item as (typeof SAMPLE_DRAFTS)[number]).title
-        : (item as (typeof STORY_IDEAS)[number]).text;
+        : (item as (typeof STORY_IDEAS)[number]).chip;
       btn.appendChild(el("span", "kind", item.kind));
-      btn.appendChild(document.createTextNode(item.chip));
+      btn.appendChild(el("span", "sample-headline", headline));
       frag.appendChild(btn);
+    }
+
+    if (!samplesExpanded && all.length > 2) {
+      const more = el("button", "more-samples") as HTMLButtonElement;
+      more.type = "button";
+      more.dataset.more = "1";
+      more.textContent = `More examples (${all.length - 2})`;
+      frag.appendChild(more);
     }
 
     sampleRow.replaceChildren(frag);
@@ -105,6 +118,11 @@ export function initInput(): void {
   sampleRow.addEventListener("click", (e) => {
     const target = (e.target as HTMLElement).closest("button");
     if (!target || !sampleRow.contains(target)) return;
+    if (target.dataset.more) {
+      samplesExpanded = true;
+      renderSamples();
+      return;
+    }
     const id = target.dataset.sampleId;
     if (id) loadSample(id);
   });

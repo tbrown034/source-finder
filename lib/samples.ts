@@ -127,25 +127,25 @@ export const STORY_IDEAS: readonly StoryIdea[] = [
   {
     id: "storm-readiness",
     kind: "weather",
-    chip: "Hurricane-season readiness check",
+    chip: "Did Houston's promised storm fixes actually happen?",
     text: "Houston readies for the peak of hurricane season — checking whether promised fixes to power, drainage and emergency shelters actually happened.",
   },
   {
     id: "hisd-takeover",
     kind: "education beat",
-    chip: "HISD takeover, year three",
+    chip: "Three years into the HISD takeover, what has changed?",
     text: "Three years into the state takeover of Houston ISD — with the TEA extension running to 2027 and a dozen campuses closing, what has changed for students and teachers.",
   },
   {
     id: "gulfton-rebuild",
     kind: "neighborhoods",
-    chip: "Gulfton's $43M street rebuild",
+    chip: "Gulfton's $43M rebuild: who was asked, and in what language?",
     text: "Gulfton, one of Houston's densest immigrant neighborhoods, is getting a $43 million federally funded street, drainage and tree-planting overhaul. Who was asked, and in what language.",
   },
   {
     id: "uil-heat-rules",
     kind: "sports",
-    chip: "New UIL heat rules, week one",
+    chip: "New heat rules meet the first week of Texas football",
     text: "New UIL rules now force Texas schools to shorten or cancel outdoor practice on wet-bulb heat readings. What Houston-area districts, athletes and band parents are living with.",
   },
 ] as const;

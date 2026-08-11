@@ -254,13 +254,25 @@ body {
   border: 0;
   background: var(--surface);
   color: var(--ink-2);
-  font: 600 14px/1 var(--sans);
+  font: 600 14px/1.2 var(--sans);
   letter-spacing: 0.02em;
-  padding: 9px 14px;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  text-align: left;
+  padding: 10px 16px;
   cursor: pointer;
 }
 
 .mode-btn + .mode-btn { border-left: 1px solid var(--line); }
+
+.mode-name { font-weight: 700; }
+
+.mode-sub {
+  font: italic 400 12.5px var(--serif);
+  opacity: 0.85;
+}
 
 .mode-btn.is-active {
   background: var(--accent);
@@ -294,29 +306,57 @@ summary:focus-visible {
 }
 
 .sample-row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 7px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
 }
 
-.sample-btn { background: var(--surface); }
+@media (max-width: 560px) {
+  .sample-row { grid-template-columns: 1fr; }
+}
 
+/* Example cards: a beat tag over a real headline — a news digest,
+ * not a chip cloud. */
 .sample-btn {
   appearance: none;
-  display: inline-flex;
-  align-items: baseline;
-  gap: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
   border: 1px solid var(--line);
-  border-radius: 999px;
-  background: var(--ground);
+  border-radius: 4px;
+  background: var(--surface);
   color: var(--ink);
-  font: 14px/1.3 var(--sans);
   text-align: left;
-  padding: 6px 12px;
+  padding: 10px 14px;
   cursor: pointer;
   max-width: 100%;
   transition: border-color 0.12s ease, background 0.12s ease;
+}
+
+.sample-headline {
+  font: 600 15.5px/1.35 var(--serif);
+}
+
+.more-samples {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--accent);
+  font: 700 12.5px var(--sans);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  text-align: left;
+  padding: 8px 2px;
+  cursor: pointer;
+  grid-column: 1 / -1;
+}
+
+.more-samples:hover { text-decoration: underline; }
+
+.more-samples:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 .sample-btn:hover {
