@@ -254,7 +254,7 @@ body {
   border: 0;
   background: var(--surface);
   color: var(--ink-2);
-  font: 600 14px/1.2 var(--sans);
+  font: 600 15px/1.2 var(--sans);
   letter-spacing: 0.02em;
   display: inline-flex;
   flex-direction: column;
@@ -270,7 +270,7 @@ body {
 .mode-name { font-weight: 700; }
 
 .mode-sub {
-  font: italic 400 12.5px var(--serif);
+  font: italic 400 13.5px var(--serif);
   opacity: 0.85;
 }
 
@@ -288,7 +288,7 @@ body {
 }
 
 .examples-label {
-  font: 700 13.5px var(--sans);
+  font: 700 14.5px var(--sans);
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--accent);
@@ -335,7 +335,7 @@ summary:focus-visible {
 }
 
 .sample-headline {
-  font: 600 15.5px/1.35 var(--serif);
+  font: 600 17px/1.35 var(--serif);
 }
 
 .more-samples {
@@ -390,7 +390,7 @@ textarea {
   border: 1px solid var(--line);
   border-radius: 2px;
   padding: 12px 14px;
-  font: 16.5px/1.6 var(--serif);
+  font: 17.5px/1.6 var(--serif);
   resize: vertical;
   min-height: 140px;
 }
@@ -730,7 +730,7 @@ textarea::placeholder { color: var(--ink-3); font-style: italic; }
 
 .disclosure-body p {
   font-family: var(--serif);
-  font-size: 15.5px;
+  font-size: 16.5px;
   color: var(--ink-2);
   break-inside: avoid;
   margin-top: 0;
