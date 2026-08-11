@@ -90,14 +90,14 @@ body {
 }
 
 .appbar-note {
-  font-size: 13px;
+  font-size: 14px;
   color: color-mix(in srgb, #F7F4EC 72%, transparent);
 }
 
 /* Gold small-caps strip under the bar, navigator-style: the internal-
  * tool ground rules, always visible before the pitch. */
 .notice-strip {
-  font: 700 12px var(--sans);
+  font: 700 13px var(--sans);
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--stamp);
@@ -195,7 +195,7 @@ body {
 
 .step-label {
   display: block;
-  font: 700 11.5px var(--sans);
+  font: 700 12px var(--sans);
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: var(--ink-3);
@@ -205,7 +205,7 @@ body {
 .step-text {
   display: block;
   font-family: var(--serif);
-  font-size: 16px;
+  font-size: 17px;
   line-height: 1.45;
   color: var(--ink-2);
 }
@@ -243,7 +243,7 @@ body {
   border: 0;
   background: var(--surface);
   color: var(--ink-2);
-  font: 600 13px/1 var(--sans);
+  font: 600 14px/1 var(--sans);
   letter-spacing: 0.02em;
   padding: 9px 14px;
   cursor: pointer;
@@ -265,7 +265,7 @@ body {
 }
 
 .examples-label {
-  font: 700 12px var(--sans);
+  font: 700 13.5px var(--sans);
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--accent);
@@ -300,7 +300,7 @@ summary:focus-visible {
   border-radius: 999px;
   background: var(--ground);
   color: var(--ink);
-  font: 12.5px/1.3 var(--sans);
+  font: 14px/1.3 var(--sans);
   text-align: left;
   padding: 6px 12px;
   cursor: pointer;
@@ -314,7 +314,7 @@ summary:focus-visible {
 }
 
 .sample-btn .kind {
-  font-size: 10.5px;
+  font-size: 11.5px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -325,7 +325,7 @@ summary:focus-visible {
 .sample-note {
   font-family: var(--serif);
   font-style: italic;
-  font-size: 13px;
+  font-size: 14.5px;
   color: var(--ink-3);
   margin: 0 0 10px;
 }
@@ -339,7 +339,7 @@ textarea {
   border: 1px solid var(--line);
   border-radius: 2px;
   padding: 12px 14px;
-  font: 15px/1.6 var(--serif);
+  font: 16.5px/1.6 var(--serif);
   resize: vertical;
   min-height: 140px;
 }
@@ -347,7 +347,7 @@ textarea {
 textarea::placeholder { color: var(--ink-3); font-style: italic; }
 
 .privacy-note {
-  font-size: 12.5px;
+  font-size: 13.5px;
   color: var(--ink-3);
   margin: 8px 0 0;
 }
@@ -361,7 +361,7 @@ textarea::placeholder { color: var(--ink-3); font-style: italic; }
 }
 
 .char-count {
-  font: 11.5px var(--mono);
+  font: 12.5px var(--mono);
   color: var(--ink-3);
 }
 
@@ -378,7 +378,7 @@ textarea::placeholder { color: var(--ink-3); font-style: italic; }
   border-radius: 3px;
   background: transparent;
   color: var(--ink-2);
-  font: 700 12.5px/1 var(--sans);
+  font: 700 13.5px/1 var(--sans);
   text-transform: uppercase;
   letter-spacing: 0.1em;
   padding: 12px 16px;
@@ -398,7 +398,7 @@ textarea::placeholder { color: var(--ink-3); font-style: italic; }
   border-radius: 3px;
   background: var(--accent);
   color: var(--surface);
-  font: 700 12.5px/1 var(--sans);
+  font: 700 13.5px/1 var(--sans);
   text-transform: uppercase;
   letter-spacing: 0.1em;
   padding: 12px 22px;
@@ -421,7 +421,7 @@ textarea::placeholder { color: var(--ink-3); font-style: italic; }
 
 .status-line {
   font-family: var(--serif);
-  font-size: 14.5px;
+  font-size: 16px;
   color: var(--ink-2);
   border-left: 3px solid var(--accent);
   padding: 6px 12px;
@@ -435,7 +435,7 @@ textarea::placeholder { color: var(--ink-3); font-style: italic; }
 .wire:empty { display: none; }
 
 .wire {
-  font: 12px/1.9 var(--mono);
+  font: 13px/1.9 var(--mono);
   color: var(--ink-2);
   background: var(--surface);
   border: 1px solid var(--line);
@@ -478,7 +478,7 @@ textarea::placeholder { color: var(--ink-3); font-style: italic; }
 /* --- results: the sections --- */
 
 .result-meta {
-  font-size: 11.5px;
+  font-size: 12.5px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--ink-3);
@@ -493,7 +493,7 @@ textarea::placeholder { color: var(--ink-3); font-style: italic; }
  * quieter — a welcome, not a warning. */
 .result-intro {
   font-family: var(--serif);
-  font-size: 15px;
+  font-size: 16.5px;
   line-height: 1.55;
   color: var(--accent);
   background: var(--accent-soft);
@@ -506,14 +506,14 @@ textarea::placeholder { color: var(--ink-3); font-style: italic; }
 
 .intro-lead {
   font-family: var(--sans);
-  font-size: 13px;
+  font-size: 13.5px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
 
 .verify-note {
   font-family: var(--serif);
-  font-size: 15px;
+  font-size: 16.5px;
   line-height: 1.55;
   color: var(--stamp);
   background: var(--stamp-soft);
@@ -526,7 +526,7 @@ textarea::placeholder { color: var(--ink-3); font-style: italic; }
 
 .verify-lead {
   font-family: var(--sans);
-  font-size: 13px;
+  font-size: 13.5px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
@@ -565,7 +565,7 @@ textarea::placeholder { color: var(--ink-3); font-style: italic; }
 .category-q {
   font-family: var(--serif);
   font-style: italic;
-  font-size: 15px;
+  font-size: 16px;
   color: var(--ink-3);
   margin: 0 0 16px;
 }
@@ -586,14 +586,14 @@ textarea::placeholder { color: var(--ink-3); font-style: italic; }
 .lead-item .who {
   font-family: var(--serif);
   font-weight: 600;
-  font-size: 15.5px;
+  font-size: 17px;
   line-height: 1.35;
   margin: 0;
 }
 
 .lead-item .why {
   font-family: var(--serif);
-  font-size: 14px;
+  font-size: 15.5px;
   color: var(--ink-2);
   margin: 3px 0 0;
 }
@@ -601,13 +601,13 @@ textarea::placeholder { color: var(--ink-3); font-style: italic; }
 .lead-item .why-good {
   font-family: var(--serif);
   font-style: italic;
-  font-size: 13px;
+  font-size: 14.5px;
   color: var(--ink-3);
   margin: 3px 0 0;
 }
 
 .lead-item .contact {
-  font-size: 12.5px;
+  font-size: 14px;
   color: var(--stamp);
   margin: 4px 0 0;
   overflow-wrap: anywhere;
@@ -616,7 +616,7 @@ textarea::placeholder { color: var(--ink-3); font-style: italic; }
 .lead-item .contact a { color: var(--accent); }
 
 .lead-item .ground {
-  font-size: 12.5px;
+  font-size: 14px;
   margin: 4px 0 0;
   overflow-wrap: anywhere;
 }
@@ -632,12 +632,12 @@ textarea::placeholder { color: var(--ink-3); font-style: italic; }
 }
 
 .all-dropped .who { font-weight: 600; margin: 0 0 4px; }
-.all-dropped .why { font-size: 14px; color: var(--ink-2); margin: 0 0 8px; }
+.all-dropped .why { font-size: 15.5px; color: var(--ink-2); margin: 0 0 8px; }
 
 .none-note {
   font-family: var(--serif);
   font-style: italic;
-  font-size: 13.5px;
+  font-size: 14.5px;
   color: var(--ink-3);
   margin: 0 0 12px;
 }
@@ -651,7 +651,7 @@ textarea::placeholder { color: var(--ink-3); font-style: italic; }
   padding: 0;
   color: var(--accent);
   font: inherit;
-  font-size: 13px;
+  font-size: 14px;
   text-decoration: underline;
   cursor: pointer;
 }
@@ -679,13 +679,13 @@ textarea::placeholder { color: var(--ink-3); font-style: italic; }
 
 .disclosure-body p {
   font-family: var(--serif);
-  font-size: 14px;
+  font-size: 15.5px;
   color: var(--ink-2);
   break-inside: avoid;
   margin-top: 0;
 }
 
-.disclosure-body strong { color: var(--ink); font-family: var(--sans); font-size: 13px; }
+.disclosure-body strong { color: var(--ink); font-family: var(--sans); font-size: 14px; }
 
 .colophon {
   border-top: 3px double var(--rule);
@@ -693,7 +693,7 @@ textarea::placeholder { color: var(--ink-3); font-style: italic; }
   padding-top: 16px;
   text-align: center;
   font-family: var(--serif);
-  font-size: 13.5px;
+  font-size: 14.5px;
   color: var(--ink-2);
 }
 
@@ -701,7 +701,7 @@ textarea::placeholder { color: var(--ink-3); font-style: italic; }
 
 .colophon .fine {
   font-family: var(--sans);
-  font-size: 11px;
+  font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: var(--ink-3);
