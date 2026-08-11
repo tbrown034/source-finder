@@ -1,13 +1,10 @@
 /* The input section: draft/idea mode toggle, clickable samples, character
- * counter, and the one fetch in the product. Recorded replay renders
- * instantly when a sample has a committed fixture; the live call is the
- * explicit click. Every failure path ends by pointing back at the
- * recorded sample, which never depends on the API. */
+ * counter, and the one fetch in the product. Sample chips only load text
+ * into the box — every result comes from a fresh live run, so no two
+ * demos look the same. Every failure path offers a way to start over. */
 
 import { SAMPLE_DRAFTS, STORY_IDEAS } from "../../lib/samples.js";
-import { RECORDED_RESULTS } from "../../lib/recorded-result.js";
-import { applyGroundingGate, type Suggestion } from "../../lib/grounding.js";
-import type { RecordedResult } from "../../lib/recorded-result.js";
+import type { Suggestion } from "../../lib/grounding.js";
 import { byId, el } from "../format.js";
 import { clearResults, renderResults } from "./results.js";
 
@@ -108,12 +105,7 @@ export function initInput(): void {
           updateCount();
           setStatus("");
           progressLog.replaceChildren();
-          const recorded = RECORDED_RESULTS.find((r) => r.sampleId === idea.id);
-          if (recorded) {
-            renderRecorded(recorded);
-          } else {
-            clearResults();
-          }
+          clearResults();
         });
       }
       frag.appendChild(btn);
@@ -161,30 +153,8 @@ export function initInput(): void {
     sampleNote.appendChild(a);
     sampleNote.appendChild(document.createTextNode("."));
 
-    const recorded = RECORDED_RESULTS.find((r) => r.sampleId === id);
     setStatus("");
-    if (recorded) {
-      renderRecorded(recorded);
-    } else {
-      clearResults();
-    }
-  }
-
-  /* Replay runs the committed fixture back through the same grounding
-   * gate the server applies — the honesty claim is enforced in the
-   * browser, not just promised by CI. */
-  function renderRecorded(recorded: RecordedResult): void {
-    const { kept, droppedCount } = applyGroundingGate(
-      recorded.suggestions,
-      new Set(recorded.searchUrlsNormalized),
-    );
-    renderResults(kept, {
-      provenance:
-        `Recorded ${recorded.model} run (captured ${recorded.capturedOn}), replayed verbatim and re-checked against the grounding gate in your browser — no API call was made. Not convinced? "Find missed sources" runs it live.`,
-      droppedCount: recorded.droppedCount + droppedCount,
-      searchesRun: recorded.searchesRun,
-      ms: recorded.ms,
-    });
+    clearResults();
   }
 
   function setMode(next: Mode): void {
@@ -316,7 +286,7 @@ export function initInput(): void {
 
       if (resp.status === 429) {
         setStatus(
-          "The demo's request quota is used up for now. The recorded sample results still work — they never touch the API.",
+          "The demo's request quota is used up for now — try again in a little while.",
           true,
         );
         return;
@@ -328,7 +298,7 @@ export function initInput(): void {
         setStatus(
           body?.error
             ? `${body.error}.`
-            : "The model call failed. Nothing was computed from a partial answer — try again in a minute, or use a recorded sample.",
+            : "The model call failed. Nothing was computed from a partial answer — try again in a minute.",
           true,
         );
         return;
@@ -393,7 +363,7 @@ export function initInput(): void {
       if (seq === runSeq) {
         progressLog.replaceChildren();
         setStatus(
-          "Could not reach the API. The recorded sample results still work — they never depend on it.",
+          "Could not reach the API — check your connection and try again.",
           true,
         );
       }

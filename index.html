@@ -74,12 +74,11 @@
         <p><strong>What the AI does.</strong> One model call per request:
         Claude (claude-haiku-4-5, by Anthropic) reads your text, runs up to
         five real web searches, and proposes sources across five blindspot
-        categories. The recorded samples were captured on claude-sonnet-4-6
-        and are labeled with their model. Server-side code then drops every suggestion that is not
+        categories. Server-side code then drops every suggestion that is not
         backed by an actual search result URL — if the model cannot ground a
         suggestion in a search it ran, you never see it. The page tells you
-        how many were dropped, and recorded samples are re-checked through
-        the same gate in your browser.</p>
+        how many were dropped. Every run is live and unique — nothing is
+        cached or replayed.</p>
         <p><strong>What gets sent.</strong> The text you paste is sent to
         Anthropic's API to be read by the model, and the model's search
         queries go out to the web. Nothing is stored by this site; there is
