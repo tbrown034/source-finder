@@ -403,16 +403,26 @@ textarea::placeholder { color: var(--ink-3); font-style: italic; }
  * so the end of the draft stays visible instead of pinning to the edge. */
 .input-footer { scroll-margin-top: 28px; }
 
+/* Mirrors .verify-note's shape, but in the accent green and a notch
+ * quieter — a welcome, not a warning. */
 .result-intro {
   font-family: var(--serif);
   font-size: 15px;
   line-height: 1.55;
-  color: var(--ink-2);
-  border: 1px solid var(--line);
-  border-left: 6px solid var(--accent);
+  color: var(--accent);
+  background: var(--accent-soft);
+  border: 2px solid color-mix(in srgb, var(--accent) 45%, transparent);
+  border-left-width: 6px;
   border-radius: 2px;
   padding: 12px 16px;
   margin: 12px 0 12px;
+}
+
+.intro-lead {
+  font-family: var(--sans);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 
 .verify-note {

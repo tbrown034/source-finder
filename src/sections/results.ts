@@ -44,7 +44,7 @@ export function renderResults(
   frag.appendChild(el("p", "result-meta", gateBits.join(" · ")));
 
   const intro = el("p", "result-intro");
-  intro.appendChild(el("strong", undefined, "A second set of eyes, not a grade."));
+  intro.appendChild(el("strong", "intro-lead", "A second set of eyes, not a grade."));
   intro.appendChild(
     document.createTextNode(
       " Every story has more possible voices than any one reporter can chase — that's the job, not a flaw in your draft. If this one stays a quick hit, skip all of this. If it grows into something bigger, here are leads worth a look.",
