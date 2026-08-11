@@ -12,9 +12,11 @@ them.
 ## MVP behavior
 
 - Four draft examples and four story-idea examples.
-- Clicking an example shows a saved, reviewed result immediately and makes no
+- Clicking an example only loads its text; it does not show results or make an
   API call.
-- "Run it live instead" and typed submissions call the API explicitly.
+- The green action button explicitly runs both loaded examples and typed text.
+- A saved, reviewed result appears only when a loaded example's live run
+  fails.
 - Live runs try Anthropic's `claude-sonnet-5` first, with up to five web
   searches.
 - Only when Anthropic cannot complete a usable grounded run, the server makes

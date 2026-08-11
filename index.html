@@ -35,7 +35,7 @@
       </div>
 
       <div class="examples">
-        <p class="examples-label">Try an example — instant saved result:</p>
+        <p class="examples-label">Load an example, then run the demo:</p>
         <div id="sampleRow" class="sample-row" role="group" aria-label="Load an example"></div>
       </div>
 
@@ -74,10 +74,10 @@
         blindspot categories. Server-side code then drops every suggestion
         that is not backed by an actual search result URL — if the model
         cannot ground a suggestion in a search it ran, you never see it.
-        The page tells you how many were dropped. Examples show a saved run
-        instantly, labeled with its model and capture date and re-checked
-        through the same gate in your browser. "Run it live instead" repeats
-        it against the API; typed text runs live only when you submit it.</p>
+        The page tells you how many were dropped. An example chip only loads
+        text into the box; the green button runs it live. If a live example
+        fails, the page can show a labeled saved result that is re-checked
+        through the same gate in your browser.</p>
         <p><strong>What gets sent.</strong> Live text is sent to Anthropic
         first. If that attempt cannot finish with usable grounded results, the
         same text is also sent to OpenAI for the backup attempt. Search queries go out to the web.
