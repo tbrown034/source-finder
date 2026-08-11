@@ -14,6 +14,8 @@ import { clearResults, renderResults } from "./results.js";
 type Mode = "draft" | "idea";
 
 const MAX_CHARS = 8000;
+const MIN_CHARS = 40;
+const SAMPLES_SHOWN = 4;
 
 export function initInput(): void {
   const textarea = byId<HTMLTextAreaElement>("storyText");
@@ -25,10 +27,13 @@ export function initInput(): void {
   const modeDraftBtn = byId<HTMLButtonElement>("modeDraft");
   const modeIdeaBtn = byId<HTMLButtonElement>("modeIdea");
 
+  const progressLog = byId<HTMLDivElement>("progressLog");
+
   let mode: Mode = "draft";
   let activeSampleId: string | null = null;
   let running = false;
   let runSeq = 0;
+  let samplesExpanded = false;
 
   /* Any change to the input invalidates an in-flight request: its
    * response would describe text the user is no longer looking at.
@@ -52,7 +57,27 @@ export function initInput(): void {
       return;
     }
     const line = el("p", isError ? "status-line is-error" : "status-line", text);
+    if (isError) {
+      // Every dead end gets a way out.
+      line.appendChild(document.createTextNode(" "));
+      const reset = el("button", "linklike", "Start over") as HTMLButtonElement;
+      reset.type = "button";
+      reset.addEventListener("click", startOver);
+      line.appendChild(reset);
+    }
     status.replaceChildren(line);
+  }
+
+  function startOver(): void {
+    cancelInFlight();
+    textarea.value = "";
+    activeSampleId = null;
+    sampleNote.hidden = true;
+    updateCount();
+    clearResults();
+    progressLog.replaceChildren();
+    setStatus("");
+    textarea.focus();
   }
 
   function renderSamples(): void {
@@ -66,19 +91,20 @@ export function initInput(): void {
     );
     frag.appendChild(label);
 
-    if (mode === "draft") {
-      for (const sample of SAMPLE_DRAFTS) {
-        const btn = el("button", "sample-btn") as HTMLButtonElement;
-        btn.type = "button";
+    const all = mode === "draft" ? SAMPLE_DRAFTS : STORY_IDEAS;
+    const shown = samplesExpanded ? all : all.slice(0, SAMPLES_SHOWN);
+
+    for (const item of shown) {
+      const btn = el("button", "sample-btn") as HTMLButtonElement;
+      btn.type = "button";
+      if (mode === "draft") {
+        const sample = item as (typeof SAMPLE_DRAFTS)[number];
         btn.appendChild(el("span", "kind", sample.kind));
         btn.appendChild(document.createTextNode(sample.title));
         btn.addEventListener("click", () => loadDraftSample(sample.id));
-        frag.appendChild(btn);
-      }
-    } else {
-      for (const idea of STORY_IDEAS) {
-        const btn = el("button", "sample-btn", idea.text) as HTMLButtonElement;
-        btn.type = "button";
+      } else {
+        const idea = item as (typeof STORY_IDEAS)[number];
+        btn.appendChild(document.createTextNode(idea.text));
         btn.addEventListener("click", () => {
           cancelInFlight();
           textarea.value = idea.text;
@@ -86,6 +112,7 @@ export function initInput(): void {
           sampleNote.hidden = true;
           updateCount();
           setStatus("");
+          progressLog.replaceChildren();
           const recorded = RECORDED_RESULTS.find((r) => r.sampleId === idea.id);
           if (recorded) {
             renderRecorded(recorded);
@@ -93,8 +120,24 @@ export function initInput(): void {
             clearResults();
           }
         });
-        frag.appendChild(btn);
       }
+      frag.appendChild(btn);
+    }
+
+    if (all.length > SAMPLES_SHOWN) {
+      const toggle = el(
+        "button",
+        "linklike sample-more",
+        samplesExpanded
+          ? "Show fewer"
+          : `Show ${all.length - SAMPLES_SHOWN} more`,
+      ) as HTMLButtonElement;
+      toggle.type = "button";
+      toggle.addEventListener("click", () => {
+        samplesExpanded = !samplesExpanded;
+        renderSamples();
+      });
+      frag.appendChild(toggle);
     }
     sampleRow.replaceChildren(frag);
   }
@@ -105,6 +148,7 @@ export function initInput(): void {
     cancelInFlight();
     textarea.value = sample.text;
     activeSampleId = sample.id;
+    progressLog.replaceChildren();
     updateCount();
 
     sampleNote.hidden = false;
@@ -152,6 +196,8 @@ export function initInput(): void {
     if (mode === next) return;
     cancelInFlight();
     mode = next;
+    samplesExpanded = false;
+    progressLog.replaceChildren();
     modeDraftBtn.classList.toggle("is-active", mode === "draft");
     modeIdeaBtn.classList.toggle("is-active", mode === "idea");
     modeDraftBtn.setAttribute("aria-pressed", String(mode === "draft"));
@@ -168,10 +214,58 @@ export function initInput(): void {
     setStatus("");
   }
 
+  interface DoneLine {
+    suggestions: Suggestion[];
+    dropped_count: number;
+    searches_run: number | null;
+    model: string;
+    ms: number;
+  }
+
+  interface ProgressLine {
+    kind: "search_started" | "search_returned" | "writing";
+    n?: number;
+    query?: string;
+    resultCount?: number;
+  }
+
+  /* One log line per search, updated in place as its query arrives and
+   * its results come back — a live view of the work, not a spinner. */
+  const searchLines = new Map<number, HTMLElement>();
+
+  function logProgress(p: ProgressLine): void {
+    if (p.kind === "writing") {
+      progressLog.appendChild(
+        el("p", "progress-item", "Searches done — reading results and writing suggestions…"),
+      );
+      return;
+    }
+    const n = p.n ?? 0;
+    let lineEl = searchLines.get(n);
+    if (!lineEl) {
+      lineEl = el("p", "progress-item", `Search ${n} starting…`);
+      searchLines.set(n, lineEl);
+      progressLog.appendChild(lineEl);
+    }
+    if (p.kind === "search_started" && p.query) {
+      lineEl.textContent = `Search ${n}: “${p.query}”`;
+    } else if (p.kind === "search_returned") {
+      lineEl.textContent = `${lineEl.textContent} — ${p.resultCount ?? 0} results`;
+    }
+    progressLog.scrollTop = progressLog.scrollHeight;
+  }
+
   async function findSources(): Promise<void> {
     const text = textarea.value.trim();
     if (!text) {
       setStatus("Paste a draft or describe your story first.", true);
+      return;
+    }
+    if (text.length < MIN_CHARS) {
+      setStatus(
+        "Give the model a bit more to work with — at least a sentence or two of specifics.",
+        true,
+      );
       return;
     }
     if (running) return;
@@ -179,15 +273,17 @@ export function initInput(): void {
     const seq = ++runSeq;
     findBtn.disabled = true;
     clearResults();
+    searchLines.clear();
+    progressLog.replaceChildren();
 
     // Announce the wait sentence ONCE (role="status" would otherwise
-    // re-announce every second); the ticking seconds live in a span
-    // hidden from screen readers.
+    // re-announce constantly); live progress renders below, hidden from
+    // screen readers, with ticking seconds likewise aria-hidden.
     const startedAt = Date.now();
     const line = el(
       "p",
       "status-line",
-      "Reading your text and running up to 8 real web searches. This usually takes one to two minutes. ",
+      "Working — the model is reading your text and searching the web. Each search appears below as it runs; expect one to two minutes. ",
     );
     const secondsEl = el("span", undefined, "");
     secondsEl.setAttribute("aria-hidden", "true");
@@ -209,35 +305,82 @@ export function initInput(): void {
 
       if (resp.status === 429) {
         setStatus(
-          "The demo's request quota is used up for now. The recorded sample results above still work — they never touch the API.",
+          "The demo's request quota is used up for now. The recorded sample results still work — they never touch the API.",
           true,
         );
         return;
       }
-      if (!resp.ok) {
+      if (!resp.ok || !resp.body) {
+        const body = (await resp.json().catch(() => null)) as
+          | { error?: string }
+          | null;
         setStatus(
-          "The model call failed. Nothing was computed from a partial answer — try again in a minute, or use a recorded sample.",
+          body?.error
+            ? `${body.error}.`
+            : "The model call failed. Nothing was computed from a partial answer — try again in a minute, or use a recorded sample.",
           true,
         );
         return;
       }
-      const data = (await resp.json()) as {
-        suggestions: Suggestion[];
-        dropped_count: number;
-        searches_run: number | null;
-        model: string;
-        ms: number;
+
+      // NDJSON stream: progress lines, then exactly one done or error.
+      const reader = resp.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+      let finished = false;
+      const handleLine = (raw: string): void => {
+        if (!raw.trim() || finished) return;
+        let parsed: { t?: string } & Record<string, unknown>;
+        try {
+          parsed = JSON.parse(raw) as { t?: string } & Record<string, unknown>;
+        } catch {
+          return;
+        }
+        if (parsed.t === "progress" && seq === runSeq) {
+          logProgress(parsed as unknown as ProgressLine);
+        } else if (parsed.t === "done") {
+          finished = true;
+          const data = parsed as unknown as DoneLine;
+          setStatus("");
+          progressLog.replaceChildren();
+          renderResults(data.suggestions, {
+            provenance:
+              `Found LIVE by ${data.model} just now${activeSampleId ? " for the loaded sample" : ""} — grounded against the web searches it ran for this request.`,
+            droppedCount: data.dropped_count,
+            searchesRun: data.searches_run,
+            ms: data.ms,
+          });
+        } else if (parsed.t === "error") {
+          finished = true;
+          progressLog.replaceChildren();
+          setStatus(
+            `${typeof parsed.error === "string" ? parsed.error : "The model call failed"}. Nothing was computed from a partial answer.`,
+            true,
+          );
+        }
       };
-      setStatus("");
-      renderResults(data.suggestions, {
-        provenance:
-          `Found LIVE by ${data.model} just now${activeSampleId ? " for the loaded sample" : ""} — grounded against the web searches it ran for this request.`,
-        droppedCount: data.dropped_count,
-        searchesRun: data.searches_run,
-        ms: data.ms,
-      });
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (seq !== runSeq) return;
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        let idx: number;
+        while ((idx = buffer.indexOf("\n")) !== -1) {
+          handleLine(buffer.slice(0, idx));
+          buffer = buffer.slice(idx + 1);
+        }
+      }
+      handleLine(buffer);
+      if (!finished && seq === runSeq) {
+        progressLog.replaceChildren();
+        setStatus(
+          "The connection ended before the model finished. Nothing was computed from a partial answer — try again.",
+          true,
+        );
+      }
     } catch {
       if (seq === runSeq) {
+        progressLog.replaceChildren();
         setStatus(
           "Could not reach the API. The recorded sample results still work — they never depend on it.",
           true,

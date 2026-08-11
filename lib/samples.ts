@@ -139,7 +139,13 @@ export interface StoryIdea {
   text: string;
 }
 
+/* storm-readiness leads because it carries a recorded result — the
+ * instant-demo path should be visible without expanding the list. */
 export const STORY_IDEAS: readonly StoryIdea[] = [
+  {
+    id: "storm-readiness",
+    text: "Houston readies for the peak of hurricane season — checking whether promised fixes to power, drainage and emergency shelters actually happened.",
+  },
   {
     id: "heat-outages",
     text: "Texas grid operator warns of record summer demand — looking at what another multi-day outage would mean for Houston's most vulnerable neighborhoods.",
@@ -155,10 +161,6 @@ export const STORY_IDEAS: readonly StoryIdea[] = [
   {
     id: "port-expansion",
     text: "The Port of Houston is expanding again. What the growth means for air quality in the communities along the Ship Channel.",
-  },
-  {
-    id: "storm-readiness",
-    text: "Houston readies for the peak of hurricane season — checking whether promised fixes to power, drainage and emergency shelters actually happened.",
   },
   {
     id: "rent-evictions",

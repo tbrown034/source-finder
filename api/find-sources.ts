@@ -7,6 +7,11 @@
  * actual search result. What survives is returned with an honest
  * dropped_count. No from-memory citations reach the reader.
  *
+ * The response is a stream: NDJSON progress lines while the model works
+ * (each search as it starts and returns), then one "done" line with the
+ * gated result. Validation and quota errors are plain JSON with real
+ * status codes — the stream begins only once the model call is committed.
+ *
  * The pasted text is sent to Anthropic; the model's search queries go to
  * the web. Nothing is stored here. */
 
@@ -24,6 +29,7 @@ import {
   SYSTEM_PROMPT,
 } from "../lib/prompt.js";
 import { parseSuggestionsArray } from "../lib/parse-answer.js";
+import { SseParser, StreamAccumulator } from "../lib/sse-accumulator.js";
 
 const MAX_INPUT_CHARS = 8000;
 // Live runs with 6-8 searches take 60-90s; the function's maxDuration is
@@ -102,6 +108,7 @@ export default async function handler(
       body: JSON.stringify({
         model: MODEL,
         max_tokens: MAX_TOKENS,
+        stream: true,
         system: SYSTEM_PROMPT,
         tools: [
           {
@@ -123,7 +130,7 @@ export default async function handler(
     return;
   }
 
-  if (!response.ok) {
+  if (!response.ok || !response.body) {
     // Log the upstream status for the operator; tell the reader the truth
     // about whether retrying can help.
     console.error(`anthropic upstream error: HTTP ${response.status}`);
@@ -137,48 +144,67 @@ export default async function handler(
     return;
   }
 
-  let payload: {
-    content?: unknown;
-    usage?: {
-      input_tokens?: number;
-      output_tokens?: number;
-      server_tool_use?: { web_search_requests?: number };
-    };
+  // From here on the response is a committed NDJSON stream.
+  res.status(200);
+  res.setHeader("Content-Type", "application/x-ndjson; charset=utf-8");
+  const send = (line: Record<string, unknown>): void => {
+    res.write(JSON.stringify(line) + "\n");
   };
+
+  const parser = new SseParser();
+  const acc = new StreamAccumulator();
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
   try {
-    payload = await response.json();
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      for (const event of parser.feed(decoder.decode(value, { stream: true }))) {
+        if (event.type === "error") {
+          console.error("anthropic stream error event", event.error);
+          send({ t: "error", error: "model call failed" });
+          res.end();
+          return;
+        }
+        const progress = acc.feed(event);
+        if (progress) send({ t: "progress", ...progress });
+      }
+    }
   } catch {
-    res.status(502).json({ error: "model returned an unreadable response" });
-    return;
-  }
-  if (typeof payload !== "object" || payload === null) {
-    res.status(502).json({ error: "model returned an unreadable response" });
+    // Timeout or network drop mid-stream: nothing is computed from a
+    // partial answer.
+    send({ t: "error", error: "model call failed" });
+    res.end();
     return;
   }
 
-  const content = payload.content;
+  const content = acc.content();
   const searchUrls = collectSearchUrls(content);
   const suggestions = parseSuggestionsArray(content);
   if (!Array.isArray(suggestions)) {
-    res.status(502).json({
+    send({
+      t: "error",
       error:
-        "model returned unparseable output — nothing was computed from it",
+        "the model did not return a usable source list for this input — that usually means the text is too thin for sourcing",
     });
+    res.end();
     return;
   }
 
   const { kept, droppedCount } = applyGroundingGate(suggestions, searchUrls);
 
-  res.status(200).json({
+  send({
+    t: "done",
     mode: isIdea ? "idea" : "draft",
     suggestions: kept,
     dropped_count: droppedCount,
-    searches_run: payload.usage?.server_tool_use?.web_search_requests ?? null,
+    searches_run: acc.usage.server_tool_use?.web_search_requests ?? null,
     usage: {
-      input_tokens: payload.usage?.input_tokens ?? null,
-      output_tokens: payload.usage?.output_tokens ?? null,
+      input_tokens: acc.usage.input_tokens ?? null,
+      output_tokens: acc.usage.output_tokens ?? null,
     },
     model: MODEL,
     ms: Date.now() - started,
   });
+  res.end();
 }
