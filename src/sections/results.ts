@@ -66,6 +66,22 @@ export function renderResults(
       const li = el("div", "lead-item");
       li.appendChild(el("p", "who", item.who_or_what));
       li.appendChild(el("p", "why", item.why_needed));
+      if (item.why_good) {
+        li.appendChild(el("p", "why-good", `Why this source: ${item.why_good}`));
+      }
+      if (item.contact && item.contact_url) {
+        const contact = el("p", "contact");
+        contact.appendChild(
+          document.createTextNode(`Possible contact (unverified): ${item.contact} — `),
+        );
+        const ca = document.createElement("a");
+        ca.href = item.contact_url;
+        ca.textContent = "confirm here";
+        ca.target = "_blank";
+        ca.rel = "noopener noreferrer";
+        contact.appendChild(ca);
+        li.appendChild(contact);
+      }
       const ground = el("p", "ground");
       ground.appendChild(document.createTextNode("Grounding: "));
       const a = document.createElement("a");

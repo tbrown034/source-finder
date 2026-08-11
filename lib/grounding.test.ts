@@ -203,6 +203,52 @@ describe("the grounding gate — no from-memory citations survive", () => {
   });
 });
 
+describe("optional fields — contacts obey the same grounding rule", () => {
+  const urls = () =>
+    collectSearchUrls(
+      searchResponse([
+        "https://www.fema.gov/openfema-data-page",
+        "https://www.fema.gov/about/contact",
+      ]),
+    );
+
+  it("keeps a contact whose contact_url appeared in search results", () => {
+    const s = good({
+      contact: "Press office: 202-555-0100",
+      contact_url: "https://www.fema.gov/about/contact",
+    });
+    const { kept } = applyGroundingGate([s], urls());
+    expect(kept[0]?.contact).toBe("Press office: 202-555-0100");
+    expect(kept[0]?.contact_url).toBe("https://www.fema.gov/about/contact");
+  });
+
+  it("strips a contact whose contact_url was never a search result — suggestion survives", () => {
+    const s = good({
+      contact: "Press office: 202-555-0100",
+      contact_url: "https://www.fema.gov/invented/contact-page",
+    });
+    const { kept, droppedCount } = applyGroundingGate([s], urls());
+    expect(kept).toHaveLength(1);
+    expect(droppedCount).toBe(0);
+    expect(kept[0]?.contact).toBeUndefined();
+    expect(kept[0]?.contact_url).toBeUndefined();
+  });
+
+  it("strips a contact that has no contact_url at all", () => {
+    const s = good({ contact: "call 713-555-0100" });
+    const { kept } = applyGroundingGate([s], urls());
+    expect(kept[0]?.contact).toBeUndefined();
+  });
+
+  it("passes why_good through and drops empty why_good", () => {
+    const withWhy = good({ why_good: "Independent federal dataset" });
+    const withEmpty = good({ why_good: "   " });
+    const { kept } = applyGroundingGate([withWhy, withEmpty], urls());
+    expect(kept[0]?.why_good).toBe("Independent federal dataset");
+    expect(kept[1]?.why_good).toBeUndefined();
+  });
+});
+
 describe("isWellFormed", () => {
   it("accepts a complete suggestion", () => {
     expect(isWellFormed(good())).toBe(true);

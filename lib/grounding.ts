@@ -17,6 +17,13 @@ export interface Suggestion {
   category: string;
   who_or_what: string;
   why_needed: string;
+  /* Why this particular source is credible or well-placed — optional. */
+  why_good?: string;
+  /* How to reach the source (media line, contact page, email) — optional,
+   * and only kept when contact_url passes the grounding gate. Always
+   * presented as unverified until the reporter confirms it. */
+  contact?: string;
+  contact_url?: string;
   url: string;
   source_title: string;
 }
@@ -109,10 +116,41 @@ export function applyGroundingGate(
     }
     const normalized = normalizeUrl(s.url);
     if (normalized !== null && searchUrls.has(normalized)) {
-      kept.push(s);
+      kept.push(sanitizeOptionalFields(s, searchUrls));
     } else {
       droppedCount++;
     }
   }
   return { kept, droppedCount };
+}
+
+/* Optional fields follow the same rule as the suggestion itself: contact
+ * details survive only when their URL was actually returned by a search.
+ * A contact without a grounded URL is stripped — the suggestion stays,
+ * the unverifiable detail does not. */
+function sanitizeOptionalFields(
+  s: Suggestion,
+  searchUrls: Set<string>,
+): Suggestion {
+  const out: Suggestion = {
+    category: s.category,
+    who_or_what: s.who_or_what,
+    why_needed: s.why_needed,
+    url: s.url,
+    source_title: s.source_title,
+  };
+  if (typeof s.why_good === "string" && s.why_good.trim().length > 0) {
+    out.why_good = s.why_good;
+  }
+  if (
+    typeof s.contact === "string" && s.contact.trim().length > 0 &&
+    typeof s.contact_url === "string"
+  ) {
+    const contactNorm = normalizeUrl(s.contact_url);
+    if (contactNorm !== null && searchUrls.has(contactNorm)) {
+      out.contact = s.contact;
+      out.contact_url = s.contact_url;
+    }
+  }
+  return out;
 }

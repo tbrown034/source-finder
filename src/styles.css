@@ -295,6 +295,21 @@ textarea {
   margin: 2px 0 3px;
 }
 
+.lead-item .why-good {
+  font-size: 13.5px;
+  color: var(--ink-3);
+  margin: 0 0 3px;
+}
+
+.lead-item .contact {
+  font-size: 13px;
+  color: var(--stamp);
+  margin: 0 0 3px;
+  overflow-wrap: anywhere;
+}
+
+.lead-item .contact a { color: var(--accent); }
+
 .lead-item .ground {
   font-size: 13px;
   margin: 0;
