@@ -134,8 +134,8 @@ function collectSearchEvidence(payload: Record<string, unknown>): {
   /* Complete consulted-source list from each web search call. */
   for (const item of output) {
     if (!isObject(item) || item.type !== "web_search_call") continue;
+    searchesRun++;
     const action = isObject(item.action) ? item.action : null;
-    if (!action || action.type === "search") searchesRun++;
     if (action && Array.isArray(action.sources)) {
       for (const source of action.sources) addSearchResult(results, source);
     }

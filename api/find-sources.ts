@@ -28,6 +28,7 @@ import {
   THINKING,
 } from "../lib/prompt.js";
 import { parseSuggestionsArray } from "../lib/parse-answer.js";
+import { estimateApiCostUsd } from "../lib/cost.js";
 import {
   OPENAI_FALLBACK_MODEL,
   OpenAiFallbackError,
@@ -61,6 +62,10 @@ interface AnthropicPrimaryRun extends ProviderRun {
   provider: "anthropic";
   model: string;
   searchesRun: number;
+  usage: {
+    inputTokens: number | null;
+    outputTokens: number | null;
+  };
 }
 
 class AnthropicPrimaryError extends Error {
@@ -182,6 +187,10 @@ async function runAnthropicPrimary(options: {
       suggestions,
       searchUrls,
       searchesRun: acc.searchesRun,
+      usage: {
+        inputTokens: acc.usage.input_tokens ?? null,
+        outputTokens: acc.usage.output_tokens ?? null,
+      },
     };
   } finally {
     clearTimeout(timeout);
@@ -330,6 +339,13 @@ export default async function handler(
     );
   }
 
+  const estimatedCostUsd = estimateApiCostUsd({
+    model: result.run.model,
+    inputTokens: result.run.usage.inputTokens,
+    outputTokens: result.run.usage.outputTokens,
+    webSearches: result.run.searchesRun,
+  });
+
   send({
     t: "done",
     mode: isIdea ? "idea" : "draft",
@@ -338,6 +354,7 @@ export default async function handler(
     searches_run: result.run.searchesRun,
     model: result.run.model,
     provider: result.provider,
+    estimated_cost_usd: estimatedCostUsd,
     ms: Date.now() - started,
   });
   res.end();

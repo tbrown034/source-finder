@@ -10,6 +10,7 @@ export interface RenderOptions {
   provenance: string; // the recorded-vs-live label, always shown
   droppedCount: number;
   searchesRun: number | null;
+  estimatedCostUsd: number | null;
   ms: number | null;
   /* When set (recorded replays), renders a visible action that triggers
    * the real fetch — replay by default, live on demand. */
@@ -47,6 +48,9 @@ export function renderResults(
       : "every suggestion below is grounded in a search result",
   );
   if (opts.ms !== null) gateBits.push(`${(opts.ms / 1000).toFixed(1)}s`);
+  if (opts.estimatedCostUsd !== null) {
+    gateBits.push(`estimated API cost $${opts.estimatedCostUsd.toFixed(2)}`);
+  }
   frag.appendChild(el("p", "result-meta", gateBits.join(" · ")));
 
   const verify = el("p", "verify-note");

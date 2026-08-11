@@ -126,6 +126,7 @@ async function runOnce(model: string, text: string, isIdea: boolean) {
     ms: Date.now() - started,
     drops: explainDrops(suggestions, searchUrls),
     keptSample: kept.slice(0, 3).map((k) => k.who_or_what),
+    keptDetails: kept,
   };
 }
 
@@ -146,7 +147,12 @@ for (const model of useModels) {
         `${model}${useStream ? "(stream)" : ""}  ${id}  run ${i}: kept=${r.kept} dropped=${r.dropped} searches=${r.searches} searchUrls=${r.searchUrlCount} inputTokens=${r.inputTokens} outputTokens=${r.outputTokens} ms=${r.ms}`,
       );
       if (showDetails && r.keptSample.length > 0) {
-        console.log(`    SAMPLE ${r.keptSample.join(" | ")}`);
+        for (const suggestion of r.keptDetails) {
+          console.log(
+            `    KEEP [${suggestion.category}] ${suggestion.who_or_what} — ${suggestion.why_needed}`,
+          );
+          console.log(`         ${suggestion.url}`);
+        }
       }
       for (const d of r.drops ?? []) {
         const detail = d.reason === "url_not_in_search_results"
