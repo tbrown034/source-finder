@@ -254,14 +254,14 @@ body {
   border: 0;
   background: var(--surface);
   color: var(--ink-2);
-  font: 600 15px/1.2 var(--sans);
+  font: 600 17px/1.2 var(--sans);
   letter-spacing: 0.02em;
   display: inline-flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 3px;
+  gap: 4px;
   text-align: left;
-  padding: 10px 16px;
+  padding: 13px 20px;
   cursor: pointer;
 }
 
@@ -270,9 +270,11 @@ body {
 .mode-name { font-weight: 700; }
 
 .mode-sub {
-  font: italic 400 13.5px var(--serif);
+  font: italic 400 14.5px var(--serif);
   opacity: 0.85;
 }
+
+.write-label { margin: 14px 0 8px; }
 
 .mode-btn.is-active {
   background: var(--accent);
