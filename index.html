@@ -46,7 +46,7 @@
         placeholder="Paste your draft here, or load one of the samples above."></textarea>
 
       <p class="privacy-note">Don't paste confidential material. Live runs
-      send the text to Anthropic's API.</p>
+      send the text to an external AI service.</p>
 
       <div class="input-footer">
         <span id="charCount" class="char-count">0 / 8,000</span>
@@ -67,9 +67,10 @@
     <details class="disclosure">
       <summary>What this does, what gets sent, and what it never does</summary>
       <div class="disclosure-body">
-        <p><strong>What the AI does.</strong> One model call per live
-        request: Claude (claude-sonnet-4-6, by Anthropic) reads your text,
-        runs up to five real web searches, and proposes sources across five
+        <p><strong>What the AI does.</strong> A live request first uses
+        Anthropic's Claude Sonnet 5. If Anthropic is unavailable, the server
+        makes one backup attempt with OpenAI's GPT-5.6 Terra. The active model
+        reads your text, searches the web and proposes sources across five
         blindspot categories. Server-side code then drops every suggestion
         that is not backed by an actual search result URL — if the model
         cannot ground a suggestion in a search it ran, you never see it.
@@ -77,11 +78,11 @@
         instantly, labeled with its model and capture date and re-checked
         through the same gate in your browser. "Run it live instead" repeats
         it against the API; typed text runs live only when you submit it.</p>
-        <p><strong>What gets sent.</strong> The text you paste is sent to
-        Anthropic's API to be read by the model, and the model's search
-        queries go out to the web. Nothing is stored by this site; there is
-        no database, and page-view analytics never receive the text anyone
-        types. Because the text leaves
+        <p><strong>What gets sent.</strong> Live text is sent to Anthropic
+        first. If that service is unavailable, the same text is also sent to
+        OpenAI for the backup attempt. Search queries go out to the web.
+        Nothing is stored by this site; there is no database, and page-view
+        analytics never receive the text anyone types. Because the text leaves
         your machine, never paste confidential material: unpublished source
         identities, off-the-record information, sealed records, or anything
         a source shared in confidence.</p>

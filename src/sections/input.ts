@@ -216,7 +216,11 @@ export function initInput(): void {
   }
 
   interface ProgressLine {
-    kind: "search_started" | "search_returned" | "writing";
+    kind:
+      | "search_started"
+      | "search_returned"
+      | "writing"
+      | "fallback_started";
     n?: number;
     query?: string;
     resultCount?: number;
@@ -236,6 +240,17 @@ export function initInput(): void {
   }
 
   function logProgress(p: ProgressLine): void {
+    if (p.kind === "fallback_started") {
+      progressLog.appendChild(
+        el(
+          "p",
+          "progress-item",
+          `${stamp()}  primary search could not finish — trying backup`,
+        ),
+      );
+      progressLog.scrollTop = progressLog.scrollHeight;
+      return;
+    }
     if (p.kind === "writing") {
       progressLog.appendChild(
         el(

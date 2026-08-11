@@ -1,8 +1,8 @@
 # Source Finder
 
 Source Finder is a small newsroom concept demo. A reporter pastes a draft or
-describes a story idea; Claude searches the web and returns sources, records
-and perspectives the reporter may have missed.
+describes a story idea; an AI model searches the web and returns sources,
+records and perspectives the reporter may have missed.
 
 Live site: https://source-finder-five.vercel.app
 
@@ -15,7 +15,10 @@ them.
 - Clicking an example shows a saved, reviewed result immediately and makes no
   API call.
 - "Run it live instead" and typed submissions call the API explicitly.
-- Live results use `claude-sonnet-4-6` with up to five web searches.
+- Live runs try Anthropic's `claude-sonnet-5` first, with up to five web
+  searches.
+- Only when Anthropic is unavailable, the server makes one backup attempt
+  through OpenAI's Responses API with `gpt-5.6-terra` and web search.
 - Suggestions are grouped into five editorial blindspot categories.
 - Every displayed suggestion URL must have appeared in a search result from
   that same model response.
@@ -44,16 +47,29 @@ not a deterministic guarantee, so live output still requires human review.
 
 ## Cost controls
 
-Sonnet 4.6 remains the live model because the local harness found that Haiku
-more often reconstructed URLs that the gate correctly rejected. A measured
-live run costs roughly $0.30-$0.40 and takes about a minute. Current official
-pricing is $3 per million input tokens, $15 per million output tokens, plus
-$0.01 per web search.
+Sonnet 5 is the primary model. Adaptive thinking is disabled for this
+constrained JSON task so it does not consume the output budget. Anthropic's
+[official Sonnet 5 announcement](https://www.anthropic.com/news/claude-sonnet-5)
+lists introductory pricing through Aug. 31, 2026 at $2 per million input
+tokens and $10 per million output tokens; starting Sept. 1, those rates become
+$3 and $15. Anthropic's
+[pricing documentation](https://platform.claude.com/docs/en/about-claude/pricing)
+lists web search at $10 per 1,000 searches, plus token costs for search
+content.
+
+The OpenAI fallback uses `gpt-5.6-terra` only after an Anthropic availability
+failure. OpenAI describes Terra as its balance of intelligence and cost; its
+[central API pricing table](https://platform.openai.com/docs/pricing) lists
+short-context standard rates of $2 per million input tokens and $12 per
+million output tokens, with web search at $10 per 1,000 calls plus search
+content tokens. A fallback request can add OpenAI usage after a failed
+Anthropic attempt, so spend limits should be set on both provider accounts.
+Re-baseline the measured per-run cost after the first live production test.
 
 The endpoint allows 3 requests per IP per hour and 20 per day, but those
 counters are in memory and reset across serverless instances. They are a
-guardrail, not a hard cap. The Anthropic workspace spend limit or prepaid
-balance is the dependable cost fuse.
+guardrail, not a hard cap. Provider account spend limits or prepaid balances
+are the dependable cost fuses.
 
 ## Local checks
 
@@ -66,7 +82,7 @@ pnpm dev
 
 Current local validation on Aug. 11, 2026:
 
-- 90 unit tests pass.
+- 100 unit tests pass.
 - TypeScript and the Vite production build pass.
 - All eight shipped examples have exactly one saved fixture.
 - Every saved suggestion passes the current grounding gate.
@@ -78,16 +94,15 @@ Only run this when changing the prompt, model or grounding behavior:
 
 ```sh
 set -a; source .env.local; set +a
-node_modules/.bin/esbuild scripts/gate-harness.ts --bundle --format=esm \
-  --platform=node --outfile=/tmp/gate-harness.mjs
-node /tmp/gate-harness.mjs 3 --stream claude-sonnet-4-6 cyfair-bond
+node_modules/.bin/tsx scripts/gate-harness.ts 1 --stream claude-sonnet-5 faded-roads
 ```
 
 The harness spends real API credit. Ordinary tests and builds do not.
 
 ## Privacy and logging
 
-Live text is sent to Anthropic and search queries go to the web. The site has
-no database. Production gate logs contain only aggregate drop reasons, not
-suggestion text or URLs. The page warns reporters not to submit confidential
-material.
+Live text is sent to Anthropic first. If Anthropic is unavailable, the same
+text is sent to OpenAI for one backup attempt. Search queries go to the web.
+The site has no database. Production gate logs contain only aggregate drop
+reasons, not suggestion text or URLs. The page warns reporters not to submit
+confidential material.

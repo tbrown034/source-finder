@@ -16,6 +16,7 @@ import {
   MAX_TOKENS,
   MODEL,
   SYSTEM_PROMPT,
+  THINKING,
 } from "../lib/prompt.js";
 import {
   applyGroundingGate,
@@ -54,6 +55,7 @@ const response = await fetch("https://api.anthropic.com/v1/messages", {
   body: JSON.stringify({
     model: MODEL,
     max_tokens: MAX_TOKENS,
+    thinking: THINKING,
     system: SYSTEM_PROMPT,
     tools: [
       { type: "web_search_20250305", name: "web_search", max_uses: MAX_SEARCHES },

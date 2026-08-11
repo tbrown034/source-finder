@@ -4,12 +4,11 @@
 
 import { CATEGORIES } from "./categories.js";
 
-/* Sonnet over Haiku for the live path, decided by harness evidence
- * (scripts/gate-harness.ts, Aug 11): across streaming runs Haiku
- * reconstructed 2-3 URLs from memory per run and the gate rightly
- * dropped them; Sonnet grounded 12/12 on every sample. A slower correct
- * demo beats a fast empty one. Five searches keeps runs near a minute. */
-export const MODEL = "claude-sonnet-4-6";
+/* Sonnet 5 is Anthropic's drop-in upgrade from the previously verified 4.6
+ * path. Adaptive thinking is unnecessary for this constrained JSON task and
+ * would share the output budget, so live and recording paths disable it. */
+export const MODEL = "claude-sonnet-5";
+export const THINKING = { type: "disabled" } as const;
 export const MAX_TOKENS = 5000;
 export const MAX_SEARCHES = 5;
 

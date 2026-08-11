@@ -4,21 +4,21 @@
  * happened. This is the evidence tool for prompt or model changes — run
  * it before and after touching lib/prompt.ts.
  *
- * Usage (bundle through esbuild, key from the environment):
+ * Usage (key from the environment):
  *   set -a; source .env.local; set +a
- *   node_modules/.bin/esbuild scripts/gate-harness.ts --bundle --format=esm \
- *     --platform=node --outfile=/tmp/gate-harness.mjs \
- *   && node /tmp/gate-harness.mjs [runsPerCase] [model ...] [sampleId ...]
+ *   node_modules/.bin/tsx scripts/gate-harness.ts \
+ *     [runsPerCase] [--stream] [--details] [model ...] [sampleId ...]
  *
- * Defaults: 1 run per case, both models, three samples
- * (cyfair-bond draft, constable-raises draft, storm-readiness idea).
- * Cost guide: a haiku run is roughly $0.05-0.10, a sonnet run $0.25-0.40. */
+ * Defaults: 1 Sonnet 5 run per case over two drafts and one story idea.
+ * This spends real API credit. */
 
 import {
   buildUserContent,
   MAX_SEARCHES,
   MAX_TOKENS,
+  MODEL,
   SYSTEM_PROMPT,
+  THINKING,
 } from "../lib/prompt.js";
 import {
   applyGroundingGate,
@@ -27,20 +27,30 @@ import {
 } from "../lib/grounding.js";
 import { SAMPLE_DRAFTS, STORY_IDEAS } from "../lib/samples.js";
 import { parseSuggestionsArray } from "../lib/parse-answer.js";
-import { SseParser, StreamAccumulator } from "../lib/sse-accumulator.js";
+import {
+  SseParser,
+  StreamAccumulator,
+  type Usage,
+} from "../lib/sse-accumulator.js";
 
-const KNOWN_MODELS = ["claude-haiku-4-5", "claude-sonnet-4-6"];
-const DEFAULT_SAMPLES = ["cyfair-bond", "constable-raises", "storm-readiness"];
+const KNOWN_MODELS = [
+  "claude-haiku-4-5",
+  "claude-sonnet-4-6",
+  "claude-sonnet-5",
+];
+const DEFAULT_SAMPLES = ["faded-roads", "cyfair-bond", "storm-readiness"];
 
 const args = process.argv.slice(2);
 /* --stream exercises the exact reassembly path the deployed function
  * uses (SSE -> StreamAccumulator); without it, plain non-streaming. */
 const useStream = args.includes("--stream");
 if (useStream) args.splice(args.indexOf("--stream"), 1);
+const showDetails = args.includes("--details");
+if (showDetails) args.splice(args.indexOf("--details"), 1);
 const runs = /^\d+$/.test(args[0] ?? "") ? Number(args.shift()) : 1;
 const models = args.filter((a) => KNOWN_MODELS.includes(a));
 const sampleIds = args.filter((a) => !KNOWN_MODELS.includes(a));
-const useModels = models.length ? models : KNOWN_MODELS;
+const useModels = models.length ? models : [MODEL];
 const useSamples = sampleIds.length ? sampleIds : DEFAULT_SAMPLES;
 
 const apiKey = process.env.ANTHROPIC_API_KEY;
@@ -69,6 +79,7 @@ async function runOnce(model: string, text: string, isIdea: boolean) {
     body: JSON.stringify({
       model,
       max_tokens: MAX_TOKENS,
+      thinking: model === "claude-sonnet-5" ? THINKING : undefined,
       stream: useStream,
       system: SYSTEM_PROMPT,
       tools: [
@@ -81,7 +92,7 @@ async function runOnce(model: string, text: string, isIdea: boolean) {
     return { error: `HTTP ${response.status}: ${(await response.text()).slice(0, 200)}` };
   }
   let content: unknown;
-  let usage: { server_tool_use?: { web_search_requests?: number } } | undefined;
+  let usage: Usage | undefined;
   if (useStream) {
     const parser = new SseParser();
     const acc = new StreamAccumulator();
@@ -109,6 +120,8 @@ async function runOnce(model: string, text: string, isIdea: boolean) {
     kept: kept.length,
     dropped: droppedCount,
     searches: usage?.server_tool_use?.web_search_requests ?? null,
+    inputTokens: usage?.input_tokens ?? null,
+    outputTokens: usage?.output_tokens ?? null,
     searchUrlCount: searchUrls.size,
     ms: Date.now() - started,
     drops: explainDrops(suggestions, searchUrls),
@@ -130,8 +143,11 @@ for (const model of useModels) {
         continue;
       }
       console.log(
-        `${model}${useStream ? "(stream)" : ""}  ${id}  run ${i}: kept=${r.kept} dropped=${r.dropped} searches=${r.searches} searchUrls=${r.searchUrlCount} ms=${r.ms}`,
+        `${model}${useStream ? "(stream)" : ""}  ${id}  run ${i}: kept=${r.kept} dropped=${r.dropped} searches=${r.searches} searchUrls=${r.searchUrlCount} inputTokens=${r.inputTokens} outputTokens=${r.outputTokens} ms=${r.ms}`,
       );
+      if (showDetails && r.keptSample.length > 0) {
+        console.log(`    SAMPLE ${r.keptSample.join(" | ")}`);
+      }
       for (const d of r.drops ?? []) {
         const detail = d.reason === "url_not_in_search_results"
           ? ` url=${d.normalizedUrl} closest=${d.closestSearchUrl}`
