@@ -47,7 +47,7 @@ export function renderResults(
   intro.appendChild(el("strong", "intro-lead", "A second set of eyes, not a grade."));
   intro.appendChild(
     document.createTextNode(
-      " Every story has more possible voices than any one reporter can chase — that's the job, not a flaw in your draft. If this one stays a quick hit, skip all of this. If it grows into something bigger, here are leads worth a look.",
+      " Quick hit? Skip all of this. Going deeper? Leads worth a look.",
     ),
   );
   frag.appendChild(intro);
