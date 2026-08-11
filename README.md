@@ -59,11 +59,12 @@ text is reproduced.
 
 ## What was actually tested (Aug 11, 2026)
 
-- 44 vitest unit tests: the grounding gate (URL normalization, adversarial
+- 55 vitest unit tests: the grounding gate (URL normalization, adversarial
   same-domain invented links, credentialed-URL rejection, empty-search
-  drops-everything, contact gating), the rate limiter (windows, caps, daily
-  reset), and fixture integrity (the committed recorded results re-pass the
-  live gate).
+  drops-everything, contact gating), JSON extraction from model answers
+  (bracketed narration, nested arrays, fences), the rate limiter (windows,
+  caps, daily reset), and fixture integrity (the committed recorded results
+  re-pass the live gate — which the browser also re-runs at replay time).
 - One real production round-trip after deploy: 15 suggestions, 0 dropped,
   7 searches, 85s, HTTP 200.
 - Recorded fixtures were captured live through the production code path
@@ -93,7 +94,11 @@ two minutes and cost roughly $0.30-0.40 each (mostly search-result input
 tokens), which is a real cost constraint on making this a daily-driver tool.
 Junk or very thin input can produce a model response with no parseable
 suggestion list; the server returns an honest 502 and computes nothing from
-it. The endpoint handler is thin and not covered by HTTP-level tests (its
+it. Contact details are the one model-authored string code cannot verify:
+their URL must pass the grounding gate, but the value itself (a phone
+number, an email) could still be wrong — which is why every contact is
+labeled unverified with a confirm-here link, and why the verify-first rule
+is on the page at all. The endpoint handler is thin and not covered by HTTP-level tests (its
 gates are unit-tested). Suggestions reflect what web search surfaces, which
 over-represents institutions with good SEO — the tool can have the very
 blindspots it is trying to surface, and a reporter's judgment remains the
