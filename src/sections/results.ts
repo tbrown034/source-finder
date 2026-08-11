@@ -62,9 +62,15 @@ export function renderResults(
   frag.appendChild(verify);
 
   for (const category of CATEGORIES) {
-    const block = el("section", "category-block");
-    block.appendChild(el("h3", undefined, category.label));
-    block.appendChild(el("p", "category-q", category.question));
+    // Each section folds away — open by default, so a reporter chasing
+    // one angle can collapse the rest without losing them.
+    const block = document.createElement("details");
+    block.className = "category-block";
+    block.open = true;
+    const summary = document.createElement("summary");
+    summary.appendChild(el("h3", undefined, category.label));
+    summary.appendChild(el("p", "category-q", category.question));
+    block.appendChild(summary);
 
     const items = suggestions.filter((s) => s.category === category.id);
     if (items.length === 0) {
