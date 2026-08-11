@@ -264,12 +264,11 @@ export function initInput(): void {
       return;
     }
     if (p.kind === "writing") {
-      writingLine = el(
-        "p",
-        "progress-item",
-        `${stamp()}  searches complete — writing suggestions`,
-      );
-      writingLine.dataset.prefix = `${stamp()}  searches complete — writing suggestions`;
+      // The model can interleave more searches after it starts writing,
+      // so this line claims no finality — and it is re-appended below any
+      // later search line to stay the live bottom line.
+      writingLine = el("p", "progress-item", `${stamp()}  writing suggestions`);
+      writingLine.dataset.prefix = `${stamp()}  writing suggestions`;
       writingStart = Date.now();
       progressLog.appendChild(writingLine);
       progressLog.scrollTop = progressLog.scrollHeight;
@@ -281,6 +280,8 @@ export function initInput(): void {
       lineEl = el("p", "progress-item", `${stamp()}  search ${n} …`);
       searchLines.set(n, lineEl);
       progressLog.appendChild(lineEl);
+      // Keep the ticking writing line beneath the newest search.
+      if (writingLine) progressLog.appendChild(writingLine);
     }
     if (p.kind === "search_started" && p.query) {
       lineEl.textContent = `${stamp()}  search ${n}  “${p.query}”`;
