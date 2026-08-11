@@ -62,6 +62,7 @@ export function renderResults(
         ),
       );
     }
+    const itemsWrap = el("div", "category-items");
     for (const item of items) {
       const li = el("div", "lead-item");
       li.appendChild(el("p", "who", item.who_or_what));
@@ -91,8 +92,9 @@ export function renderResults(
       a.rel = "noopener noreferrer";
       ground.appendChild(a);
       li.appendChild(ground);
-      block.appendChild(li);
+      itemsWrap.appendChild(li);
     }
+    if (items.length > 0) block.appendChild(itemsWrap);
     frag.appendChild(block);
   }
 

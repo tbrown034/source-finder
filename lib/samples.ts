@@ -12,6 +12,8 @@
 
 export interface SampleDraft {
   id: string;
+  /* short label for the chip row */
+  chip: string;
   kind: string; // shown as a small tag: "beat", "breaking", "enterprise"...
   title: string;
   basedOnUrl: string;
@@ -22,6 +24,7 @@ export interface SampleDraft {
 export const SAMPLE_DRAFTS: readonly SampleDraft[] = [
   {
     id: "cyfair-bond",
+    chip: "Cy-Fair ISD $1.6B bond",
     kind: "education beat",
     title: "Cy-Fair ISD sends $1.6B bond and tax rate increase to voters",
     basedOnUrl:
@@ -42,6 +45,7 @@ District officials estimate the increase would cost the owner of a median-value 
   },
   {
     id: "constable-raises",
+    chip: "Constables' $305K raises",
     kind: "county government",
     title: "Harris County constables' pay climbs to $305,000",
     basedOnUrl:
@@ -60,6 +64,7 @@ The increases take effect only if they survive the county's budget approval proc
   },
   {
     id: "river-oaks-prank",
+    chip: "River Oaks shooter-scare prank",
     kind: "breaking news",
     title: "Felony charges filed after social media prank caused office shooter scare",
     basedOnUrl:
@@ -80,6 +85,7 @@ Gonzales has twice pleaded guilty to misdemeanors for earlier stunts, including 
   },
   {
     id: "tropics-watch",
+    chip: "Atlantic tropics watch",
     kind: "weather",
     title: "Three Atlantic systems bear watching; Texas coast quiet for now",
     basedOnUrl:
@@ -98,6 +104,7 @@ Forecasters cautioned that a Cabo Verde system that survives the crossing would 
   },
   {
     id: "bms-plant",
+    chip: "BMS $2.3B Houston plant",
     kind: "business",
     title: "Bristol Myers Squibb picks Houston for $2.3B manufacturing plant",
     basedOnUrl:
@@ -116,6 +123,7 @@ Regional leaders have pointed to workforce training programs at San Jacinto Coll
   },
   {
     id: "lottery-commissions",
+    chip: "Lottery retailers kept $1M",
     kind: "investigative",
     title: "Retailers in $95M lottery sweep kept commissions despite rule findings",
     basedOnUrl:
@@ -136,6 +144,7 @@ The state's former lottery director faces a felony charge in Travis County over 
 
 export interface StoryIdea {
   id: string;
+  chip: string;
   text: string;
 }
 
@@ -144,26 +153,32 @@ export interface StoryIdea {
 export const STORY_IDEAS: readonly StoryIdea[] = [
   {
     id: "storm-readiness",
+    chip: "Hurricane-season readiness check",
     text: "Houston readies for the peak of hurricane season — checking whether promised fixes to power, drainage and emergency shelters actually happened.",
   },
   {
     id: "heat-outages",
+    chip: "Grid stress and vulnerable Houston",
     text: "Texas grid operator warns of record summer demand — looking at what another multi-day outage would mean for Houston's most vulnerable neighborhoods.",
   },
   {
     id: "flood-buyouts",
+    chip: "Harvey buyouts, a decade on",
     text: "Harris County's home buyout program a decade after Harvey: who got bought out, who is still waiting, and where the money went.",
   },
   {
     id: "hisd-takeover",
+    chip: "HISD takeover, two years in",
     text: "Two years into the state takeover of Houston ISD — measuring what changed for students, teachers and test scores.",
   },
   {
     id: "port-expansion",
+    chip: "Port growth and Ship Channel air",
     text: "The Port of Houston is expanding again. What the growth means for air quality in the communities along the Ship Channel.",
   },
   {
     id: "rent-evictions",
+    chip: "Inside eviction court",
     text: "Evictions in Harris County are running above pre-pandemic levels. Following one week inside the county's busiest eviction court.",
   },
 ] as const;

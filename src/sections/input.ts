@@ -82,29 +82,23 @@ export function initInput(): void {
 
   function renderSamples(): void {
     const frag = document.createDocumentFragment();
-    const label = el(
-      "p",
-      "sample-label",
-      mode === "draft"
-        ? "Or load a sample draft (facts from real Houston Chronicle reporting; prose written for this demo)"
-        : "Or start from an example assignment",
-    );
-    frag.appendChild(label);
-
     const all = mode === "draft" ? SAMPLE_DRAFTS : STORY_IDEAS;
     const shown = samplesExpanded ? all : all.slice(0, SAMPLES_SHOWN);
 
     for (const item of shown) {
       const btn = el("button", "sample-btn") as HTMLButtonElement;
       btn.type = "button";
+      btn.title = mode === "draft"
+        ? (item as (typeof SAMPLE_DRAFTS)[number]).title
+        : (item as (typeof STORY_IDEAS)[number]).text;
       if (mode === "draft") {
         const sample = item as (typeof SAMPLE_DRAFTS)[number];
         btn.appendChild(el("span", "kind", sample.kind));
-        btn.appendChild(document.createTextNode(sample.title));
+        btn.appendChild(document.createTextNode(sample.chip));
         btn.addEventListener("click", () => loadDraftSample(sample.id));
       } else {
         const idea = item as (typeof STORY_IDEAS)[number];
-        btn.appendChild(document.createTextNode(idea.text));
+        btn.appendChild(document.createTextNode(idea.chip));
         btn.addEventListener("click", () => {
           cancelInFlight();
           textarea.value = idea.text;
@@ -229,26 +223,40 @@ export function initInput(): void {
     resultCount?: number;
   }
 
-  /* One log line per search, updated in place as its query arrives and
-   * its results come back — a live view of the work, not a spinner. */
+  /* The wire: one mono log line per search, timestamped and updated in
+   * place as its query arrives and its results come back — a live view
+   * of the work, not a spinner. */
   const searchLines = new Map<number, HTMLElement>();
+  let wireStart = 0;
+
+  function stamp(): string {
+    const s = Math.max(0, Math.round((Date.now() - wireStart) / 1000));
+    const mm = String(Math.floor(s / 60)).padStart(2, "0");
+    const ss = String(s % 60).padStart(2, "0");
+    return `${mm}:${ss}`;
+  }
 
   function logProgress(p: ProgressLine): void {
     if (p.kind === "writing") {
       progressLog.appendChild(
-        el("p", "progress-item", "Searches done — reading results and writing suggestions…"),
+        el(
+          "p",
+          "progress-item",
+          `${stamp()}  searches complete — writing suggestions`,
+        ),
       );
+      progressLog.scrollTop = progressLog.scrollHeight;
       return;
     }
     const n = p.n ?? 0;
     let lineEl = searchLines.get(n);
     if (!lineEl) {
-      lineEl = el("p", "progress-item", `Search ${n} starting…`);
+      lineEl = el("p", "progress-item", `${stamp()}  search ${n} …`);
       searchLines.set(n, lineEl);
       progressLog.appendChild(lineEl);
     }
     if (p.kind === "search_started" && p.query) {
-      lineEl.textContent = `Search ${n}: “${p.query}”`;
+      lineEl.textContent = `${stamp()}  search ${n}  “${p.query}”`;
     } else if (p.kind === "search_returned") {
       lineEl.textContent = `${lineEl.textContent} — ${p.resultCount ?? 0} results`;
     }
@@ -275,6 +283,7 @@ export function initInput(): void {
     clearResults();
     searchLines.clear();
     progressLog.replaceChildren();
+    wireStart = Date.now();
 
     // Announce the wait sentence ONCE (role="status" would otherwise
     // re-announce constantly); live progress renders below, hidden from
