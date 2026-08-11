@@ -272,7 +272,7 @@ body {
 .mode-name { font-weight: 700; }
 
 .mode-sub {
-  font: italic 400 14.5px var(--serif);
+  font: italic 400 17px var(--serif);
   opacity: 0.85;
 }
 
