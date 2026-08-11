@@ -39,10 +39,12 @@
           <button type="button" id="modeIdea" class="mode-btn"
             aria-pressed="false">Describe a story</button>
         </div>
-        <span class="desk-hint">or start from an example:</span>
       </div>
 
-      <div id="sampleRow" class="sample-row" role="group" aria-label="Load an example"></div>
+      <div class="examples">
+        <p class="examples-label">Try an example — click one to load it:</p>
+        <div id="sampleRow" class="sample-row" role="group" aria-label="Load an example"></div>
+      </div>
 
       <p id="sampleNote" class="sample-note" hidden></p>
 
@@ -88,7 +90,8 @@
         <p><strong>What gets sent.</strong> The text you paste is sent to
         Anthropic's API to be read by the model, and the model's search
         queries go out to the web. Nothing is stored by this site; there is
-        no database and no analytics on the text. Because the text leaves
+        no database, and the only analytics are anonymous page-view counts —
+        never the text anyone types. Because the text leaves
         your machine, never paste confidential material: unpublished source
         identities, off-the-record information, sealed records, or anything
         a source shared in confidence.</p>
@@ -108,9 +111,19 @@
         inside that box: AI is not a journalist here — it surfaces leads,
         the page labels everything the model touched, and a journalist
         evaluates every item before it goes anywhere near a story.</p>
-        <p><strong>The sample drafts</strong> were written for this demo.
-        Their facts draw on real Houston Chronicle reporting, credited and
-        linked on each sample; no Chronicle text is reproduced.</p>
+        <p><strong>Who this is for.</strong> This is an internal newsroom
+        tool for reporters and editors — not a public product, and nothing
+        it produces is for publication. Every result is unverified
+        information until a journalist confirms it through their own
+        reporting.</p>
+        <p><strong>Where the examples come from.</strong> Each sample draft
+        was written for this demo by Claude, the same AI that powers the
+        tool, working from a real, linked Houston Chronicle article: the
+        article was read, its facts were kept, and new prose was written
+        from scratch. No Chronicle sentences are reproduced, and every
+        sample credits and links the original story it draws on. The
+        story-idea examples are assignments written for this demo about
+        real, publicly reported Houston matters.</p>
       </div>
     </details>
 
@@ -126,5 +139,9 @@
   </main>
 
   <script type="module" src="/src/main.ts"></script>
+  <!-- Vercel Web Analytics: anonymous page-view counts only; same-origin
+       script and beacons, so the strict CSP holds. Counts visits, never
+       what anyone types. -->
+  <script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>

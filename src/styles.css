@@ -181,11 +181,20 @@ body {
   color: var(--surface);
 }
 
-.desk-hint {
-  font-size: 12px;
+.examples {
+  border: 1px dashed var(--line);
+  border-radius: 4px;
+  background: var(--ground);
+  padding: 10px 12px;
+  margin: 0 0 12px;
+}
+
+.examples-label {
+  font: 700 12px var(--sans);
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--ink-3);
+  color: var(--accent);
+  margin: 0 0 8px;
 }
 
 .mode-btn:focus-visible,
@@ -203,8 +212,9 @@ summary:focus-visible {
   flex-wrap: wrap;
   align-items: center;
   gap: 7px;
-  margin: 0 0 12px;
 }
+
+.sample-btn { background: var(--surface); }
 
 .sample-btn {
   appearance: none;

@@ -205,6 +205,9 @@ export function initInput(): void {
     textarea.placeholder = mode === "draft"
       ? "Paste your draft here, or load one of the samples above."
       : "Describe the story you're planning — a sentence or two is enough. Or pick an example above.";
+    findBtn.textContent = mode === "draft"
+      ? "Find missed sources"
+      : "Suggest sources";
     textarea.value = "";
     activeSampleId = null;
     sampleNote.hidden = true;
