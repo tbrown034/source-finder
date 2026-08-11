@@ -114,22 +114,33 @@ body {
   padding: 30px 20px 72px;
 }
 
-.brief { margin-bottom: 28px; }
+.brief { margin: 10px 0 40px; }
+
+/* Staggered load reveal — one orchestrated moment, CSS only; the global
+ * prefers-reduced-motion rule disables it. */
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+.brief > * { animation: rise-in 0.5s ease-out backwards; }
+.brief > *:nth-child(2) { animation-delay: 0.08s; }
+.brief > *:nth-child(3) { animation-delay: 0.16s; }
 
 .kicker {
   font-family: var(--serif);
   font-style: italic;
-  font-size: 15px;
-  color: var(--ink-3);
-  margin: 0 0 2px;
+  font-size: clamp(17px, 2.4vw, 21px);
+  color: var(--accent);
+  margin: 0 0 6px;
 }
 
 .headline {
   font-family: var(--serif);
   font-weight: 700;
-  font-size: clamp(32px, 5.6vw, 46px);
-  line-height: 1.12;
-  margin: 0 0 6px;
+  font-size: clamp(36px, 6.6vw, 58px);
+  line-height: 1.06;
+  letter-spacing: -0.015em;
+  margin: 0 0 14px;
   text-wrap: balance;
 }
 
@@ -143,11 +154,11 @@ body {
 
 .deck {
   font-family: var(--serif);
-  font-size: 19px;
+  font-size: clamp(18px, 2.4vw, 21px);
   line-height: 1.5;
   color: var(--ink-2);
   margin: 0;
-  max-width: 56ch;
+  max-width: 54ch;
 }
 
 /* --- the desk (input) --- */
