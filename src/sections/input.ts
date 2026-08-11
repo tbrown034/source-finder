@@ -93,15 +93,8 @@ export function initInput(): void {
       btn.title = mode === "draft"
         ? (item as (typeof SAMPLE_DRAFTS)[number]).title
         : (item as (typeof STORY_IDEAS)[number]).text;
-      if (mode === "draft") {
-        const sample = item as (typeof SAMPLE_DRAFTS)[number];
-        btn.appendChild(el("span", "kind", sample.kind));
-        btn.appendChild(document.createTextNode(sample.chip));
-      } else {
-        btn.appendChild(
-          document.createTextNode((item as (typeof STORY_IDEAS)[number]).chip),
-        );
-      }
+      btn.appendChild(el("span", "kind", item.kind));
+      btn.appendChild(document.createTextNode(item.chip));
       frag.appendChild(btn);
     }
 

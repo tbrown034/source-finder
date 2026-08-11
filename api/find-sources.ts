@@ -14,7 +14,7 @@
  */
 
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { clientIp, createRateLimiter, QUOTA_BODY } from "./_shared.js";
+import { clientIp, createRateLimiter, isAllowlisted, QUOTA_BODY } from "./_shared.js";
 import {
   collectSearchUrls,
   explainDrops,
@@ -253,7 +253,8 @@ export default async function handler(
   }
 
   try {
-    if (limiter.overQuota(clientIp(req))) {
+    const ip = clientIp(req);
+    if (!isAllowlisted(ip) && limiter.overQuota(ip)) {
       res.status(429).json(QUOTA_BODY);
       return;
     }

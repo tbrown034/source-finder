@@ -45,6 +45,20 @@ export function createRateLimiter(opts: {
   };
 }
 
+/* IPs in RATE_LIMIT_ALLOW_IPS (comma-separated) bypass the limiter and
+ * do not count toward the global daily cap. Owner-demo escape hatch. */
+export function isAllowlisted(
+  ip: string,
+  env: string | undefined = process.env.RATE_LIMIT_ALLOW_IPS,
+): boolean {
+  if (!env) return false;
+  return env
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean)
+    .includes(ip);
+}
+
 export function clientIp(req: VercelRequest): string {
   // Prefer platform-set headers over x-forwarded-for: the leftmost XFF
   // entry is client-supplied, and a rotating value there would mint a
