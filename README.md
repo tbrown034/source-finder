@@ -78,7 +78,7 @@ suggestions with missing required fields; the gate correctly kept 0/9. Luna
 was cheaper but produced weaker source choices, while Sol showed no clear gain
 over Terra for the extra cost and latency.
 
-The endpoint allows 7 requests per IP per hour and 40 per day, but those
+The endpoint allows 7 requests per IP per hour and 40 globally per day, but those
 counters are in memory and reset across serverless instances. They are a
 guardrail, not a hard cap. Provider account spend limits or prepaid balances
 are the dependable cost fuses.
@@ -94,7 +94,7 @@ pnpm dev
 
 Current local validation on Aug. 11, 2026:
 
-- 107 tests pass.
+- 108 tests pass.
 - TypeScript and the Vite production build pass.
 - All eight shipped examples have exactly one saved fixture.
 - Every saved suggestion passes the current grounding gate.

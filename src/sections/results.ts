@@ -7,7 +7,8 @@ import type { Suggestion } from "../../lib/grounding.js";
 import { byId, el } from "../format.js";
 
 export interface RenderOptions {
-  provenance: string; // the recorded-vs-live label, always shown
+  resultKind: "live" | "saved";
+  provenance: string;
   droppedCount: number;
   searchesRun: number | null;
   estimatedCostUsd: number | null;
@@ -25,7 +26,16 @@ export function renderResults(
   const root = byId("results");
   const frag = document.createDocumentFragment();
 
-  frag.appendChild(el("h2", "result-heading", "Suggested reporting leads"));
+  const headingRow = el("div", "result-heading-row");
+  headingRow.appendChild(el("h2", "result-heading", "Suggested reporting leads"));
+  headingRow.appendChild(
+    el(
+      "span",
+      `result-kind is-${opts.resultKind}`,
+      opts.resultKind === "live" ? "Current live run" : "Saved, reviewed example",
+    ),
+  );
+  frag.appendChild(headingRow);
 
   const intro = el("p", "result-intro");
   intro.appendChild(el("strong", "intro-lead", "A second set of eyes—not a grade of your story."));
