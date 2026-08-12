@@ -94,7 +94,7 @@ pnpm dev
 
 Current local validation on Aug. 11, 2026:
 
-- 108 tests pass.
+- 111 tests pass.
 - TypeScript and the Vite production build pass.
 - All eight shipped examples have exactly one saved fixture.
 - Every saved suggestion passes the current grounding gate.
