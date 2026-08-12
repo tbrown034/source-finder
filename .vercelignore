@@ -1,0 +1,3 @@
+# Unit tests under api/ match Vercel's function-file convention unless they
+# are excluded from the deployment bundle. Keep the production endpoint.
+api/*.test.ts
