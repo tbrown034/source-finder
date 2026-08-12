@@ -25,8 +25,24 @@ export function renderResults(
   const root = byId("results");
   const frag = document.createDocumentFragment();
 
-  const meta = el("p", "result-meta", opts.provenance);
-  frag.appendChild(meta);
+  frag.appendChild(el("h2", "result-heading", "Suggested reporting leads"));
+
+  const intro = el("p", "result-intro");
+  intro.appendChild(el("strong", "intro-lead", "A second set of eyes—not a grade of your story."));
+  intro.appendChild(
+    document.createTextNode(
+      " These are possible reporting paths to investigate, not a verdict on what you have written.",
+    ),
+  );
+  frag.appendChild(intro);
+
+  frag.appendChild(
+    el(
+      "p",
+      "result-trail",
+      "Each suggestion includes the source page from the web search that surfaced it.",
+    ),
+  );
 
   const gateBits: string[] = [];
   if (opts.searchesRun !== null) {
@@ -41,17 +57,6 @@ export function renderResults(
   if (opts.estimatedCostUsd !== null) {
     gateBits.push(`estimated API cost $${opts.estimatedCostUsd.toFixed(2)}`);
   }
-  frag.appendChild(el("p", "result-meta", gateBits.join(" · ")));
-
-  const intro = el("p", "result-intro");
-  intro.appendChild(el("strong", "intro-lead", "A second set of eyes, not a grade."));
-  intro.appendChild(
-    document.createTextNode(
-      " Quick hit? Skip all of this. Going deeper? Leads worth a look.",
-    ),
-  );
-  frag.appendChild(intro);
-
   const verify = el("p", "verify-note");
   verify.appendChild(el("strong", "verify-lead", "Verify before contacting."));
   verify.appendChild(
@@ -119,6 +124,15 @@ export function renderResults(
     if (items.length > 0) block.appendChild(itemsWrap);
     frag.appendChild(block);
   }
+
+  // Keep implementation and cost data available without making it compete
+  // with the editorial leads at the top of the page.
+  const runDetails = document.createElement("details");
+  runDetails.className = "run-details";
+  runDetails.appendChild(el("summary", undefined, "About this run"));
+  runDetails.appendChild(el("p", "result-meta", opts.provenance));
+  runDetails.appendChild(el("p", "result-meta", gateBits.join(" · ")));
+  frag.appendChild(runDetails);
 
   root.replaceChildren(frag);
   // Land with the input footer still in view so the reader keeps their

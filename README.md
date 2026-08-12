@@ -22,7 +22,7 @@ them.
 - Only when Anthropic cannot complete a usable grounded run, the server makes
   one backup attempt
   through OpenAI's Responses API with `gpt-5.6-terra` and web search.
-- Suggestions are grouped into five editorial blindspot categories.
+- Suggestions are grouped into four editorial blindspot categories.
 - Every displayed suggestion URL must have appeared in a search result from
   that same model response.
 
@@ -67,18 +67,18 @@ short-context standard rates of $2 per million input tokens and $12 per
 million output tokens, with web search at $10 per 1,000 calls plus search
 content tokens. A fallback request can add OpenAI usage after a failed
 Anthropic attempt, so spend limits should be set on both provider accounts.
-The page shows a small estimated API cost beside each live result, calculated
-from that response's reported tokens and search calls. Aug. 11 harness runs
-measured about $0.28 for Sonnet 5 and $0.12 for Terra on the same draft. The
-estimate is not provider billing data and its rates must be updated when
-published pricing changes.
+Run details include an estimated API cost, calculated from that response's
+reported tokens and search calls. Aug. 11 harness runs measured about $0.28
+for Sonnet 5 and $0.12 for Terra on the same draft. The estimate is not
+provider billing data and its rates must be updated when published pricing
+changes.
 
 Haiku remains out of the live path. It passed several runs, then returned nine
 suggestions with missing required fields; the gate correctly kept 0/9. Luna
 was cheaper but produced weaker source choices, while Sol showed no clear gain
 over Terra for the extra cost and latency.
 
-The endpoint allows 3 requests per IP per hour and 20 per day, but those
+The endpoint allows 7 requests per IP per hour and 40 per day, but those
 counters are in memory and reset across serverless instances. They are a
 guardrail, not a hard cap. Provider account spend limits or prepaid balances
 are the dependable cost fuses.
@@ -94,7 +94,7 @@ pnpm dev
 
 Current local validation on Aug. 11, 2026:
 
-- 106 tests pass.
+- 107 tests pass.
 - TypeScript and the Vite production build pass.
 - All eight shipped examples have exactly one saved fixture.
 - Every saved suggestion passes the current grounding gate.
