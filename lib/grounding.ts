@@ -233,6 +233,7 @@ function sanitizeOptionalFields(
   }
   if (
     typeof s.contact === "string" && s.contact.trim().length > 0 &&
+    !isScrapingArtifact(s.contact) &&
     typeof s.contact_url === "string"
   ) {
     const contactNorm = normalizeUrl(s.contact_url);
@@ -242,4 +243,13 @@ function sanitizeOptionalFields(
     }
   }
   return out;
+}
+
+/* Cloudflare's email obfuscation replaces addresses with the literal text
+ * "[email protected]" on protected pages. When a search snippet carries that
+ * placeholder, the model can copy it verbatim into a contact field. It is
+ * not a real address, so the contact is dropped (the suggestion survives). */
+export function isScrapingArtifact(contact: string): boolean {
+  return contact.toLowerCase().includes("[email protected]") ||
+    contact.toLowerCase().includes("email protected");
 }

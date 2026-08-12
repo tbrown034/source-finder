@@ -296,6 +296,18 @@ describe("optional fields — contacts obey the same grounding rule", () => {
     expect(kept[0]?.why_good).toBe("Independent federal dataset");
     expect(kept[1]?.why_good).toBeUndefined();
   });
+
+  it("strips a contact carrying the Cloudflare [email protected] artifact — suggestion survives", () => {
+    const s = good({
+      contact: "[email protected] — main press line",
+      contact_url: "https://www.fema.gov/about/contact",
+    });
+    const { kept, droppedCount } = applyGroundingGate([s], urls());
+    expect(kept).toHaveLength(1);
+    expect(droppedCount).toBe(0);
+    expect(kept[0]?.contact).toBeUndefined();
+    expect(kept[0]?.contact_url).toBeUndefined();
+  });
 });
 
 describe("isWellFormed", () => {
